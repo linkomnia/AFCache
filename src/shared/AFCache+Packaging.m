@@ -111,7 +111,8 @@ enum ManifestKeys {
 	
     ZipArchive *zip = [[ZipArchive alloc] init];
     BOOL success = [zip UnzipOpenFile:pathToZip];
-	[zip UnzipFileTo:[pathToZip stringByDeletingLastPathComponent] overWrite:YES];
+	//[zip UnzipFileTo:[pathToZip stringByDeletingLastPathComponent] overWrite:YES];
+	[zip UnzipFileTo:urlCacheStorePath overWrite:YES];
 	[zip UnzipCloseFile];
 	[zip release];
 	if (success == YES) {
@@ -142,8 +143,8 @@ enum ManifestKeys {
 		}
 		else
         {
-            NSError *error = nil;
-            [[NSFileManager defaultManager] removeItemAtPath:pathToZip error:&error];
+       //     NSError *error = nil;
+       //     [[NSFileManager defaultManager] removeItemAtPath:pathToZip error:&error];
         }
 		
 		
