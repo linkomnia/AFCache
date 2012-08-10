@@ -1490,14 +1490,6 @@ static NSMutableDictionary* AFCache_contextCache = nil;
     
     ASSERT_NO_CONNECTION_WHEN_OFFLINE_FOR_URL(theRequest.URL);
     
-    if ([NSThread isMainThread])
-    {
-        
-    }
-    else
-    {
-        
-    }
     [self performSelectorOnMainThread:@selector(startURLRequestWithCacheableItem:)
                            withObject:item
                         waitUntilDone:YES];
