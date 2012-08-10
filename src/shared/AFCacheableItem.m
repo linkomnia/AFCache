@@ -347,7 +347,7 @@
             self.info.redirectRequest = inRequest;
             self.info.redirectResponse = inRedirectResponse; // todo: overwrite reponse??
             
-            [CACHED_REDIRECTS setValue:self.url forKey:[self.info.responseURL absoluteString]];
+            [CACHED_REDIRECTS setValue:self.info.responseURL forKey:[self.url absoluteString]];
         }
         return aRequest;
     }	

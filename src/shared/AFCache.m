@@ -697,7 +697,9 @@ static NSMutableDictionary* AFCache_contextCache = nil;
                     [theRequest addValue:[DateParser formatHTTPDate:lastModified] forHTTPHeaderField:kHTTPHeaderIfModifiedSince];
                 }
                 item.IMSRequest = theRequest;
-                ASSERT_NO_CONNECTION_WHEN_OFFLINE_FOR_URL(theRequest.URL);
+            
+              // TODO: Michael: I do not understand that Assert. that case can occure often (user in train case)
+             //   ASSERT_NO_CONNECTION_WHEN_OFFLINE_FOR_URL(theRequest.URL);
                 
                 [self addItemToDownloadQueue:item];
                 
@@ -1488,16 +1490,10 @@ static NSMutableDictionary* AFCache_contextCache = nil;
     item.info.responseTimestamp = 0.0;
     item.info.request = theRequest;
     
-    ASSERT_NO_CONNECTION_WHEN_OFFLINE_FOR_URL(theRequest.URL);
+    // TODO: Michael: I do not understand that Assert. that case can occure often (user in train case)
+   // ASSERT_NO_CONNECTION_WHEN_OFFLINE_FOR_URL(theRequest.URL);
     
-    if ([NSThread isMainThread])
-    {
-        
-    }
-    else
-    {
-        
-    }
+    
     [self performSelectorOnMainThread:@selector(startURLRequestWithCacheableItem:)
                            withObject:item
                         waitUntilDone:YES];
