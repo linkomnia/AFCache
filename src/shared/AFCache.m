@@ -1340,6 +1340,8 @@ static NSMutableDictionary* AFCache_contextCache = nil;
 }
 
 
+
+
 // Add the item to the downloadQueue
 - (void)addItemToDownloadQueue:(AFCacheableItem*)item
 {
@@ -1488,13 +1490,27 @@ static NSMutableDictionary* AFCache_contextCache = nil;
     
     ASSERT_NO_CONNECTION_WHEN_OFFLINE_FOR_URL(theRequest.URL);
     
+    if ([NSThread isMainThread])
+    {
+        
+    }
+    else
+    {
+        
+    }
+    [self performSelectorOnMainThread:@selector(startURLRequestWithCacheableItem:)
+                           withObject:item
+                        waitUntilDone:YES];
+    
+}
 
-    NSURLConnection *connection = [[[NSURLConnection alloc] 
-                                    initWithRequest:theRequest
+- (void)startURLRequestWithCacheableItem:(AFCacheableItem*)item
+{
+    NSURLConnection *connection = [[[NSURLConnection alloc]
+                                    initWithRequest:item.info.request
                                     delegate:item 
                                     startImmediately:YES] autorelease];
     [pendingConnections setObject: connection forKey: item.url];
-    
 }
 
 - (BOOL)hasCachedItemForURL:(NSURL *)url
