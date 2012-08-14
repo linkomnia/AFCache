@@ -62,6 +62,8 @@ extern NSString* const UIApplicationWillResignActiveNotification;
 - (void)archiveWithInfoStore:(NSDictionary*)infoStore;
 - (void)cancelAllClientItems;
 - (id)initWithContext:(NSString*)context;
+
+
 @end
 
 @implementation AFCache
@@ -70,7 +72,7 @@ static AFCache *sharedAFCacheInstance = nil;
 static NSString* AFCache_rootPath = nil;
 static NSMutableDictionary* AFCache_contextCache = nil;
 
-@synthesize cacheEnabled, dataPath, cacheInfoStore, pendingConnections, maxItemFileSize, diskCacheDisplacementTresholdSize, suffixToMimeTypeMap, networkTimeoutIntervals;
+@synthesize cacheEnabled, dataPath, cacheInfoStore, maxItemFileSize, diskCacheDisplacementTresholdSize, suffixToMimeTypeMap, networkTimeoutIntervals;
 @synthesize clientItems;
 @synthesize concurrentConnections;
 @synthesize pauseDownload = pauseDownload_;
@@ -138,6 +140,11 @@ static NSMutableDictionary* AFCache_contextCache = nil;
 
 - (NSUInteger)requestsPending {
 	return [pendingConnections count];
+}
+
+- (NSDictionary*)pendingConnections
+{
+    return self->pendingConnections;
 }
 
 - (void)setDataPath:(NSString*)newDataPath {
@@ -273,7 +280,7 @@ static NSMutableDictionary* AFCache_contextCache = nil;
 	}
 	archivedPackageInfos = nil;
 	
-	self.pendingConnections = nil;
+	[pendingConnections release];
 	pendingConnections = [[NSMutableDictionary alloc] init];
 	
 	[downloadQueue release];
@@ -1689,7 +1696,7 @@ static NSMutableDictionary* AFCache_contextCache = nil;
     
 	[archiveTimer release];
 	[suffixToMimeTypeMap release];
-	self.pendingConnections = nil;
+	[pendingConnections release];
 	[downloadQueue release];
 	self.cacheInfoStore = nil;
 	

@@ -116,15 +116,23 @@ typedef struct NetworkTimeoutIntervals {
 	BOOL failOnStatusCodeAbove400;
 }
 
-@property BOOL cacheEnabled;
 
-@property (nonatomic, retain) NSMutableDictionary *cacheInfoStore;
-@property (nonatomic, retain) NSMutableDictionary *pendingConnections;
-@property (nonatomic, retain) NSDictionary *suffixToMimeTypeMap;
-@property (nonatomic, retain) NSMutableDictionary *packageInfos;
-@property (nonatomic, retain) NSDictionary *clientItems;
-@property (nonatomic, assign) double maxItemFileSize;
-@property (nonatomic, assign) double diskCacheDisplacementTresholdSize;
+/*
+ *  enable or disable the Cache
+ */
+@property (nonatomic, assign) BOOL cacheEnabled;
+
+
+/*
+ *  get the pending connections - URL as key returns a AFCacheableItem 
+ */
+@property (nonatomic, readonly) NSDictionary *pendingConnections;
+
+/*
+ *  set the timeout for IMSRequest (default = 45 sec)
+ *                      GETRequest (default = 100 sec)
+ *                      PackageRequest (default = 100 sec)
+ */
 @property (nonatomic, assign) NetworkTimeoutIntervals networkTimeoutIntervals;
 
 
@@ -199,6 +207,16 @@ typedef struct NetworkTimeoutIntervals {
  * Default is NO
  */
 @property (nonatomic, assign) BOOL disableSSLCertificateValidation;
+
+
+
+@property (nonatomic, retain) NSMutableDictionary *cacheInfoStore;
+@property (nonatomic, retain) NSDictionary *suffixToMimeTypeMap;
+@property (nonatomic, retain) NSMutableDictionary *packageInfos;
+@property (nonatomic, retain) NSDictionary *clientItems;
+@property (nonatomic, assign) double maxItemFileSize;
+@property (nonatomic, assign) double diskCacheDisplacementTresholdSize;
+
 
 
 + (NSString*)rootPath;

@@ -26,7 +26,6 @@
 @interface AFCache (PrivateAPI)
 
 
-
 - (AFCacheableItem *)cachedObjectForURL: (NSURL *) url 
                                delegate: (id) aDelegate 
 							   selector: (SEL) aSelector 
