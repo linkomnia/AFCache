@@ -670,7 +670,6 @@ static NSMutableDictionary* AFCache_contextCache = nil;
             // Item is fresh, so call didLoad selector and return the cached item.
             if ([item isFresh] || neverRevalidate)
             {
-                
                 item.cacheStatus = kCacheStatusFresh;
                 item.currentContentLength = item.info.contentLength;
                 //item.info.responseTimestamp = [NSDate timeIntervalSinceReferenceDate];
@@ -703,7 +702,9 @@ static NSMutableDictionary* AFCache_contextCache = nil;
                                             [item.info.lastModified timeIntervalSinceReferenceDate]];
                     [theRequest addValue:[DateParser formatHTTPDate:lastModified] forHTTPHeaderField:kHTTPHeaderIfModifiedSince];
                 }
+                // TODO: Michael I do not understand the IMSRequest
                 item.IMSRequest = theRequest;
+                item.info.request = theRequest;
             
               // TODO: Michael: I do not understand that Assert. that case can occure often (user in train case)
              //   ASSERT_NO_CONNECTION_WHEN_OFFLINE_FOR_URL(theRequest.URL);
