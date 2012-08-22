@@ -510,7 +510,10 @@ static NSMutableDictionary* AFCache_contextCache = nil;
         [aDelegate performSelector:aFailSelector withObject:item];
 #if NS_BLOCKS_AVAILABLE
         AFCacheableItemBlock block = (AFCacheableItemBlock)aFailBlock;
-        block(item);
+        if (block)
+        {
+            block(item);
+        }
 #endif
         return nil;
     }
@@ -550,7 +553,11 @@ static NSMutableDictionary* AFCache_contextCache = nil;
                 // since we do not distinguish between 301 and 302 or other types of redirects, nor save the status code anywhere
                 // we simply only check the cached redirects if we're offline
                 // see http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html 13.4 Response Cacheability
-                internalURL = [CACHED_REDIRECTS valueForKey:[url absoluteString]];
+                NSURL *cacheRedirectURL = [CACHED_REDIRECTS valueForKey:[url absoluteString]];
+                if (cacheRedirectURL)
+                {
+                    internalURL = cacheRedirectURL;
+                }
                 item = [self cacheableItemFromCacheStore: internalURL];                
             }
 			            
@@ -569,7 +576,10 @@ static NSMutableDictionary* AFCache_contextCache = nil;
         
 		if (!item) {            
             // we're offline and did not have a cached version, so return nil
-            if ([self isOffline]) return nil;
+            //TODO: Michael: this seems to be not good idea,
+            //      because the failed selector or block won't be called  From: Christian
+            //
+            //     if ([self isOffline]) return nil;
             
             // we're online - create a new item, since we had a cache miss
             item = [[[AFCacheableItem alloc] init] autorelease];
@@ -1263,9 +1273,7 @@ static NSMutableDictionary* AFCache_contextCache = nil;
         return;
     }
     
-	//	ZAssert( 
-	//		NSNotFound == [items indexOfObjectIdenticalTo:item],
-	//		@"Item added twice." );
+
 	
     [items addObject:item];
 }

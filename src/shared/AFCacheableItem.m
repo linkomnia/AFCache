@@ -557,7 +557,6 @@
     [cache removeReferenceToConnection: connection];	
 	
     NSArray* items = [self.cache cacheableItemsForURL:self.url];
-    
     // make sure we survive being released in the following call
     [[self retain] autorelease];
     
@@ -601,17 +600,16 @@
 {
 	for (AFCacheableItem* item in items)
     {
+        if (item.completionBlock)
+        {
+            item.completionBlock(item);
+        }
         id itemDelegate = item.delegate;
 		SEL selector = item.connectionDidFinishSelector;
         if ([itemDelegate respondsToSelector:selector])
         {
             [itemDelegate performSelector:selector withObject:item];
 		}
-        
-        if (item.completionBlock)
-        {
-            item.completionBlock(item);
-        }
     }
 	
 }
@@ -620,6 +618,10 @@
 {
 	for (AFCacheableItem* item in items)
     {
+        if (item.failBlock)
+        {
+            item.failBlock(item);
+        }
         id itemDelegate = item.delegate;
 		SEL selector = item.connectionDidFailSelector;
         if ([itemDelegate respondsToSelector:selector])
@@ -627,10 +629,6 @@
             [itemDelegate performSelector:selector withObject:item];
         }
         
-        if (item.failBlock)
-        {
-            item.failBlock(item);
-        }
     }
 	
 }
