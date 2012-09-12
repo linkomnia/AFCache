@@ -83,7 +83,7 @@
 			return nil;
 		}
 		
-		NSString* filePath = [self.cache fullPathForCacheableItemInfo:self.info];
+		NSString* filePath = [self.cache fullPathForCacheableItem:self];
 		if (![[NSFileManager defaultManager] fileExistsAtPath:filePath])
 		{
 			return nil;
@@ -350,7 +350,7 @@
             self.info.redirectRequest = inRequest;
             self.info.redirectResponse = inRedirectResponse; // todo: overwrite reponse??
             
-            [CACHED_REDIRECTS setValue:self.url forKey:[self.info.responseURL absoluteString]];
+            [CACHED_REDIRECTS setValue:self.info.responseURL forKey:[self.url absoluteString]];
         }
         return aRequest;
     }	
@@ -523,7 +523,7 @@
             if (url == nil) err = [NSError errorWithDomain: @"URL is nil" code: 99 userInfo: nil];
             
             // do we have a correct contentLength?
-            NSString *path = [self.cache fullPathForCacheableItemInfo:self.info];
+            NSString *path = [self.cache fullPathForCacheableItem:self];
             NSDictionary* attr = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:&err];
             if (attr != nil)
             {
@@ -560,7 +560,6 @@
     [cache removeReferenceToConnection: connection];	
 	
     NSArray* items = [self.cache cacheableItemsForURL:self.url];
-    
     // make sure we survive being released in the following call
     [[self retain] autorelease];
     
@@ -604,17 +603,16 @@
 {
 	for (AFCacheableItem* item in items)
     {
+        if (item.completionBlock)
+        {
+            item.completionBlock(item);
+        }
         id itemDelegate = item.delegate;
 		SEL selector = item.connectionDidFinishSelector;
         if ([itemDelegate respondsToSelector:selector])
         {
             [itemDelegate performSelector:selector withObject:item];
 		}
-        
-        if (item.completionBlock)
-        {
-            item.completionBlock(item);
-        }
     }
 	
 }
@@ -623,6 +621,10 @@
 {
 	for (AFCacheableItem* item in items)
     {
+        if (item.failBlock)
+        {
+            item.failBlock(item);
+        }
         id itemDelegate = item.delegate;
 		SEL selector = item.connectionDidFailSelector;
         if ([itemDelegate respondsToSelector:selector])
@@ -630,10 +632,6 @@
             [itemDelegate performSelector:selector withObject:item];
         }
         
-        if (item.failBlock)
-        {
-            item.failBlock(item);
-        }
     }
 	
 }
@@ -812,7 +810,7 @@
 - (BOOL)hasDownloadFileAttribute
 {
     unsigned int downloading = 0;
-    NSString *filePath = [cache fullPathForCacheableItemInfo:self.info];
+    NSString *filePath = [cache fullPathForCacheableItem:self];
     
     if (sizeof(downloading) != getxattr([filePath fileSystemRepresentation],
                                         kAFCacheDownloadingFileAttribute,
@@ -828,7 +826,7 @@
 
 - (BOOL)hasValidContentLength
 {
-	NSString* filePath = [self.cache fullPathForCacheableItemInfo:self.info];
+	NSString* filePath = [self.cache fullPathForCacheableItem:self];
 	if (![[NSFileManager defaultManager] fileExistsAtPath:filePath])
 	{
 		return NO;
@@ -870,7 +868,7 @@
     {
         return 0LL;
     }
-	NSString *filePath = [cache fullPathForCacheableItemInfo:self.info];
+	NSString *filePath = [cache fullPathForCacheableItem:self];
     
     uint64_t realContentLength = 0LL;
     ssize_t const size = getxattr([filePath fileSystemRepresentation],

@@ -7,7 +7,7 @@
 //
 
 #import "AFCache+Mimetypes.h"
-
+#import "AFCache+PrivateAPI.h"
 
 @implementation AFCache (MimeType)
 
