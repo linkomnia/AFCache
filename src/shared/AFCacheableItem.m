@@ -63,8 +63,11 @@
 }
 
 - (void)appendData:(NSData*)newData {
-    [fileHandle seekToEndOfFile];
-    [fileHandle writeData:newData];
+    if (newData)
+    {
+        [fileHandle seekToEndOfFile];
+        [fileHandle writeData:newData];
+    }
 }
 
 - (NSData*)data {
