@@ -107,7 +107,7 @@ typedef void (^AFCacheableItemBlock)(AFCacheableItem* item);
 @property (nonatomic, assign) SEL connectionDidFailSelector;
 @property (nonatomic, assign) int cacheStatus;
 @property (nonatomic, retain) AFCacheableItemInfo *info;
-@property (nonatomic, assign) id userData;
+@property (nonatomic, retain) NSDictionary* userData;
 @property (nonatomic, assign) BOOL isPackageArchive;
 @property (nonatomic, assign) uint64_t currentContentLength;
 @property (nonatomic, retain) NSString *username;

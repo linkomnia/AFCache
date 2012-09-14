@@ -65,6 +65,28 @@ extern const char* kAFCacheContentLengthFileAttribute;
 extern const char* kAFCacheDownloadingFileAttribute;
 extern const double kAFCacheInfiniteFileSize;
 
+
+/*
+ *
+ * Those keys can be used for the userData Dictionary
+ * to change some values / settings for a specific request
+ * you can even now use AFCache to upload files see
+ */
+extern const NSString *kAFCacheUserAgentKey;    // can be used as key to change the user agent for a specific request
+extern const NSString *kAFCacheDisableSSLCertificateValidationKey;  // can be used as key to ignore the invalid SSL certificates for a specific request
+extern const NSString *kAFCacheFailOnStatusCodeAbove400Key;     // if the request should fail aboove 400 error
+
+/*
+ *   posting data to the server
+ */
+//  use this key to post NSData as value i.e.  @{kAFCacheHTTPPostDataKey : yourNSDataObject}
+extern NSString *kAFCacheHTTPPostDataKey;
+
+// you also need the http element name where to post the file
+extern NSString *kAFCacheHTTPPostFieldNameKey;  
+
+
+
 enum {
 	kAFCacheInvalidateEntry         = 1 << 9,
 	kAFIgnoreError                  = 1 << 11,
@@ -252,7 +274,7 @@ typedef struct NetworkTimeoutIntervals {
 							   delegate: (id) aDelegate 
 							   selector: (SEL) aSelector 
 								options: (int) options
-                               userData:(id)userData;
+                               userData: (NSDictionary*)userData;
 
 - (AFCacheableItem *)cachedObjectForURL: (NSURL *) url 
 							   delegate: (id) aDelegate 
@@ -265,7 +287,7 @@ typedef struct NetworkTimeoutIntervals {
 							   selector: (SEL) aSelector 
 						didFailSelector: (SEL) aFailSelector 
 								options: (int) options
-                               userData: (id)userData
+                               userData: (NSDictionary*)userData
 							   username: (NSString *)aUsername
 							   password: (NSString *)aPassword
                                 request: (NSURLRequest*)aRequest;
@@ -278,7 +300,7 @@ typedef struct NetworkTimeoutIntervals {
                               failBlock: (id)aFailBlock  
                           progressBlock: (id)aProgressBlock
 								options: (int)options
-                               userData: (id)userData
+                               userData: (NSDictionary*)userData
 							   username: (NSString *)aUsername
 							   password: (NSString *)aPassword
                                 request: (NSURLRequest*)aRequest;
@@ -348,7 +370,7 @@ typedef struct NetworkTimeoutIntervals {
                         completionBlock: (AFCacheableItemBlock)aCompletionBlock 
                               failBlock: (AFCacheableItemBlock)aFailBlock  
 								options: (int) options
-                               userData: (id)userData
+                               userData: (NSDictionary*)userData
 							   username: (NSString *)aUsername
 							   password: (NSString *)aPassword;
 
@@ -359,7 +381,7 @@ typedef struct NetworkTimeoutIntervals {
                               failBlock: (AFCacheableItemBlock)aFailBlock  
                           progressBlock: (AFCacheableItemBlock)aProgressBlock
 								options: (int) options
-                               userData: (id)userData
+                               userData: (NSDictionary*)userData
 							   username: (NSString *)aUsername
 							   password: (NSString *)aPassword;
 

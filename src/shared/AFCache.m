@@ -56,6 +56,13 @@ const char* kAFCacheDownloadingFileAttribute = "de.artifacts.downloading";
 const double kAFCacheInfiniteFileSize = 0.0;
 const double kAFCacheArchiveDelay = 5.0;
 
+const NSString *kAFCacheUserAgentKey = @"AFCache-User-Agent";
+const NSString *kAFCacheDisableSSLCertificateValidationKey = @"kAFCacheDisableSSLCertificateValidationKey";
+const NSString *kAFCacheFailOnStatusCodeAbove400Key = @"kAFCacheFailOnStatusCodeAbove400Key";
+
+NSString *kAFCacheHTTPPostDataKey = @"kAFCacheHTTPPostDataKey";
+NSString *kAFCacheHTTPPostFieldNameKey = @"kAFCacheHTTPPostFieldNameKey";
+
 extern NSString* const UIApplicationWillResignActiveNotification;
 
 @interface AFCache()
@@ -432,7 +439,7 @@ static NSMutableDictionary* AFCache_contextCache = nil;
 							   delegate: (id) aDelegate 
                                selector: (SEL) aSelector 
 								options: (int) options
-							   userData: (id)userData
+							   userData: (NSDictionary*)userData
 {
 	return [self cachedObjectForURL: url
                            delegate: aDelegate
@@ -470,7 +477,7 @@ static NSMutableDictionary* AFCache_contextCache = nil;
 							   selector: (SEL) aSelector 
 						didFailSelector: (SEL) aFailSelector 
 								options: (int) options
-                               userData: (id)userData
+                               userData: (NSDictionary*)userData
 							   username: (NSString *)aUsername
 							   password: (NSString *)aPassword
                                 request: (NSURLRequest*)aRequest
@@ -497,7 +504,7 @@ static NSMutableDictionary* AFCache_contextCache = nil;
                               failBlock: (id)aFailBlock  
                           progressBlock: (id)aProgressBlock
 								options: (int)options
-                               userData: (id)userData
+                               userData: (NSDictionary*)userData
 							   username: (NSString *)aUsername
 							   password: (NSString *)aPassword
                                 request: (NSURLRequest*)aRequest
@@ -695,9 +702,14 @@ static NSMutableDictionary* AFCache_contextCache = nil;
                 
                 // save information that object was in cache and has to be revalidated
                 item.cacheStatus = kCacheStatusRevalidationPending;
-                NSMutableURLRequest *theRequest = [NSMutableURLRequest requestWithURL: internalURL
-                                                                          cachePolicy: NSURLRequestReloadIgnoringLocalCacheData
-                                                                      timeoutInterval: networkTimeoutIntervals.IMSRequest];
+                NSMutableURLRequest *theRequest = nil;
+                
+                
+                theRequest = [self requestWithURL:internalURL
+                                        cacheItem:item];
+
+                theRequest.cachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
+                theRequest.timeoutInterval = networkTimeoutIntervals.IMSRequest;
                 NSDate *lastModified = [NSDate dateWithTimeIntervalSinceReferenceDate: [item.info.lastModified timeIntervalSinceReferenceDate]];
                 [theRequest addValue:[DateParser formatHTTPDate:lastModified] forHTTPHeaderField:kHTTPHeaderIfModifiedSince];
                 [theRequest setValue:@"" forHTTPHeaderField:AFCacheInternalRequestHeader];
@@ -1006,6 +1018,55 @@ static NSMutableDictionary* AFCache_contextCache = nil;
 	[dict release];	
 	[self archive];
 }
+
+
+- (NSMutableURLRequest *)requestWithURL:(NSURL *)url
+                              cacheItem:(AFCacheableItem*)item
+{
+    NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:url];
+   
+    NSString *fieldName = [[item userData] valueForKey:kAFCacheHTTPPostFieldNameKey];
+    NSData *data = [[item userData] valueForKey:kAFCacheHTTPPostDataKey];
+    
+    
+    if (data == nil)
+    {
+        return urlRequest;
+    }
+    
+    // from http://www.cocoadev.com/index.pl?HTTPFileUpload
+    
+    NSString *boundry = @"0xKhTmLbOuNdArY";
+    NSString *fileName = @"iosimagefile";
+
+    
+    [urlRequest setHTTPMethod:@"POST"];
+    [urlRequest setValue:
+     [NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundry]
+      forHTTPHeaderField:@"Content-Type"];
+    
+    NSMutableData *postData =
+    [NSMutableData dataWithCapacity:[data length] + 1024];
+    [postData appendData:
+     [[NSString stringWithFormat:@"--%@\r\n", boundry] dataUsingEncoding:NSUTF8StringEncoding]];
+    [postData appendData:
+     [[NSString stringWithFormat:
+       @"Content-Disposition: form-data; name=\"%@\"; filename=\"%@\"\r\n\r\n; ", fieldName, fileName]
+      dataUsingEncoding:NSUTF8StringEncoding]];
+    [postData appendData:data];
+    [postData appendData:
+     [[NSString stringWithFormat:@"\r\n--%@--\r\n", boundry] dataUsingEncoding:NSUTF8StringEncoding]];
+    
+    [postData appendData:
+     [[NSString stringWithFormat:@"version=1&appkey=KJREOP13S78CTRSZYJK6&token=c8d15b75233d1aa783e8578f943904ebffce62c8"] dataUsingEncoding:NSUTF8StringEncoding]];
+    
+    
+    [urlRequest setHTTPBody:postData];
+    
+    
+    return urlRequest;
+}
+
 
 - (NSFileHandle*)createFileForItem:(AFCacheableItem*)cacheableItem
 {
@@ -1496,10 +1557,14 @@ static NSMutableDictionary* AFCache_contextCache = nil;
     ?networkTimeoutIntervals.PackageRequest
     :networkTimeoutIntervals.GETRequest;
 	
-    NSMutableURLRequest *theRequest = item.info.request?:[NSMutableURLRequest requestWithURL: item.url
-                                                                                 cachePolicy: NSURLRequestReloadIgnoringLocalCacheData
-                                                                             timeoutInterval: timeout];
     
+    NSMutableURLRequest *theRequest = nil;
+    theRequest = (NSMutableURLRequest*)item.info.request?:[self
+                                                           requestWithURL:item.url
+                                                                cacheItem:item];
+    
+    theRequest.cachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
+    theRequest.timeoutInterval = timeout;
     [theRequest setValue:@"" forHTTPHeaderField:AFCacheInternalRequestHeader];
     
     item.info.requestTimestamp = [NSDate timeIntervalSinceReferenceDate];
@@ -1784,7 +1849,7 @@ static NSMutableDictionary* AFCache_contextCache = nil;
                         completionBlock: (AFCacheableItemBlock)aCompletionBlock 
                               failBlock: (AFCacheableItemBlock)aFailBlock  
 								options: (int) options
-                               userData: (id)userData
+                               userData: (NSDictionary*)userData
 							   username: (NSString *)aUsername
 							   password: (NSString *)aPassword
 {
@@ -1816,7 +1881,7 @@ static NSMutableDictionary* AFCache_contextCache = nil;
                               failBlock: (AFCacheableItemBlock)aFailBlock  
                           progressBlock: (AFCacheableItemBlock)aProgressBlock
 								options: (int) options
-                               userData: (id)userData
+                               userData: (NSDictionary*)userData
 							   username: (NSString *)aUsername
 							   password: (NSString *)aPassword
 {

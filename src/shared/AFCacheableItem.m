@@ -324,10 +324,21 @@
              willSendRequest: (NSURLRequest *)inRequest
             redirectResponse: (NSURLResponse *)inRedirectResponse;
 {
+    NSString *newUserAgent = nil;
+    
     if (self.cache.userAgent)
     {
+        newUserAgent = self.cache.userAgent;
+    }
+    if ([self.userData objectForKey:kAFCacheUserAgentKey])
+    {
+        newUserAgent = [self.userData objectForKey:kAFCacheUserAgentKey];
+    }
+    
+    if (newUserAgent)
+    {
         NSMutableURLRequest *newRequest = [[inRequest mutableCopy] autorelease];
-        [newRequest setValue:self.cache.userAgent forHTTPHeaderField:@"User-Agent"];
+        [newRequest setValue:newUserAgent forHTTPHeaderField:@"User-Agent"];
         inRequest = newRequest;
     }
     
@@ -378,7 +389,13 @@
 	[self handleResponse:response];
 	
 	// call didFailSelector when statusCode >= 400
-	if (cache.failOnStatusCodeAbove400 == YES && self.info.statusCode >= 400) {
+    BOOL failAbove400 = cache.failOnStatusCodeAbove400;
+    if ([self.userData objectForKey:kAFCacheFailOnStatusCodeAbove400Key])
+    {
+        failAbove400 = [[self.userData objectForKey:kAFCacheFailOnStatusCodeAbove400Key] boolValue];
+    }
+    
+	if (failAbove400 == YES && self.info.statusCode >= 400) {
 		[self connection:connection didFailWithError:[NSError errorWithDomain:kAFCacheNSErrorDomain code:self.info.statusCode userInfo:nil]];
 		return;
 	}
@@ -410,6 +427,13 @@
     if ([[protectionSpace authenticationMethod]
          isEqualToString:NSURLAuthenticationMethodServerTrust])
     {
+        if ([self.userData objectForKey:kAFCacheDisableSSLCertificateValidationKey])
+        {
+            BOOL disable = [[self.userData objectForKey:kAFCacheDisableSSLCertificateValidationKey] boolValue];
+            
+            return disable;
+        }
+        
         // server is using an SSL certificate that the OS can't validate
         // see whether the client settings allow validation here
         if ([AFCache sharedInstance].disableSSLCertificateValidation)
@@ -650,10 +674,10 @@
         [self.cache setConnectedToNetwork:NO];
     }
     
-	if (nil != self.data && self.isRevalidating)
+	if (nil != self.data && self.isRevalidating == NO)
     {
-        // we should revalidate, but did fail. Maybe we have no network?
-        // return what we have in this case.
+        // we did fail. Maybe we have no network?
+        // return what we have in this case....but not when we did revaliate!
         
         NSArray* items = [self.cache cacheableItemsForURL:self.url];
         [self.cache removeItemsForURL:self.url];
