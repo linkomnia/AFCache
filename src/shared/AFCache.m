@@ -60,8 +60,9 @@ const NSString *kAFCacheUserAgentKey = @"AFCache-User-Agent";
 const NSString *kAFCacheDisableSSLCertificateValidationKey = @"kAFCacheDisableSSLCertificateValidationKey";
 const NSString *kAFCacheFailOnStatusCodeAbove400Key = @"kAFCacheFailOnStatusCodeAbove400Key";
 
-NSString *kAFCacheHTTPPostDataKey = @"kAFCacheHTTPPostDataKey";
-NSString *kAFCacheHTTPPostFieldNameKey = @"kAFCacheHTTPPostFieldNameKey";
+NSString *kAFCacheHTTPPostUploadDataKey = @"kAFCacheHTTPPostUploadDataKey";
+NSString *kAFCacheHTTPPostUploadFieldNameKey = @"kAFCacheHTTPPostUploadFieldNameKey";
+NSString *kAFCacheHTTPPostUploadFileNameKey = @"kAFCacheHTTPPostUploadFileNameKey";
 
 extern NSString* const UIApplicationWillResignActiveNotification;
 
@@ -1025,21 +1026,29 @@ static NSMutableDictionary* AFCache_contextCache = nil;
 {
     NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:url];
    
-    NSString *fieldName = [[item userData] valueForKey:kAFCacheHTTPPostFieldNameKey];
-    NSData *data = [[item userData] valueForKey:kAFCacheHTTPPostDataKey];
-    
-    
+    NSData *data = [[item userData] valueForKey:kAFCacheHTTPPostUploadDataKey];
+  
     if (data == nil)
     {
         return urlRequest;
     }
     
+    
+    
     // from http://www.cocoadev.com/index.pl?HTTPFileUpload
     
-    NSString *boundry = @"0xKhTmLbOuNdArY";
-    NSString *fileName = @"iosimagefile";
-
     
+    NSString *fieldName = [[item userData] valueForKey:kAFCacheHTTPPostUploadFieldNameKey];
+    NSString *filename = [[item userData] valueForKey:kAFCacheHTTPPostUploadFileNameKey];
+    
+    if (filename == nil)
+    {
+        filename = @"filename";
+    }
+    
+    
+    NSString *boundry = @"0xKhTmLbOuNdArY";
+       
     [urlRequest setHTTPMethod:@"POST"];
     [urlRequest setValue:
      [NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundry]
@@ -1051,7 +1060,7 @@ static NSMutableDictionary* AFCache_contextCache = nil;
      [[NSString stringWithFormat:@"--%@\r\n", boundry] dataUsingEncoding:NSUTF8StringEncoding]];
     [postData appendData:
      [[NSString stringWithFormat:
-       @"Content-Disposition: form-data; name=\"%@\"; filename=\"%@\"\r\n\r\n; ", fieldName, fileName]
+       @"Content-Disposition: form-data; name=\"%@\"; filename=\"%@\"\r\n\r\n; ", fieldName, filename]
       dataUsingEncoding:NSUTF8StringEncoding]];
     [postData appendData:data];
     [postData appendData:

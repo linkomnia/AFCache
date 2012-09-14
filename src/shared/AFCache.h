@@ -79,11 +79,14 @@ extern const NSString *kAFCacheFailOnStatusCodeAbove400Key;     // if the reques
 /*
  *   posting data to the server
  */
-//  use this key to post NSData as value i.e.  @{kAFCacheHTTPPostDataKey : yourNSDataObject}
-extern NSString *kAFCacheHTTPPostDataKey;
+//  use this key to post NSData as value i.e.  @{kAFCacheHTTPPostUploadDataKey : yourNSDataObject}
+extern NSString *kAFCacheHTTPPostUploadDataKey;
 
 // you also need the http element name where to post the file
-extern NSString *kAFCacheHTTPPostFieldNameKey;  
+extern NSString *kAFCacheHTTPPostUploadFieldNameKey;
+
+// set the filename for the uploaded file
+extern NSString *kAFCacheHTTPPostUploadFileNameKey;
 
 
 
