@@ -79,6 +79,9 @@ extern const NSString *kAFCacheFailOnStatusCodeAbove400Key;     // if the reques
 /*
  *   posting data to the server
  */
+// set variables for the post request -- Add NSDictionaries to an array as value for that key
+extern NSString *kAFCacheHTTPPostUploadParamsKey;
+
 //  use this key to post NSData as value i.e.  @{kAFCacheHTTPPostUploadDataKey : yourNSDataObject}
 extern NSString *kAFCacheHTTPPostUploadDataKey;
 
@@ -88,6 +91,8 @@ extern NSString *kAFCacheHTTPPostUploadFieldNameKey;
 // set the filename for the uploaded file
 extern NSString *kAFCacheHTTPPostUploadFileNameKey;
 
+//set the mime type for file up upload
+extern NSString *kAFCacheHTTPPostUploadMimeTypeKey;
 
 
 enum {
