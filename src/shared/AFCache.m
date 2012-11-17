@@ -64,6 +64,7 @@ NSString *kAFCacheHTTPPostUploadFieldNameKey = @"kAFCacheHTTPPostUploadFieldName
 NSString *kAFCacheHTTPPostUploadFileNameKey = @"kAFCacheHTTPPostUploadFileNameKey";
 NSString *kAFCacheHTTPPostParamsKey = @"kAFCacheHTTPPostParamsKey";
 NSString *kAFCacheHTTPHeaderContentTypeKey = @"kAFCacheHTTPHeaderContentTypeKey";
+NSString *kAFCacheHTTPPostUploadMimeTypeKey = @"kAFCacheHTTPPostUploadMimeTypeKey";
 
 
 extern NSString* const UIApplicationWillResignActiveNotification;
@@ -1152,6 +1153,7 @@ static NSMutableDictionary* AFCache_contextCache = nil;
     NSString *fieldName = [[item userData] valueForKey:kAFCacheHTTPPostUploadFieldNameKey];
     NSString *filename = [[item userData] valueForKey:kAFCacheHTTPPostUploadFileNameKey];
     NSString *contentType = [[item userData] valueForKey:kAFCacheHTTPHeaderContentTypeKey];
+    NSString *mimeType = [[item userData] valueForKey:kAFCacheHTTPPostUploadMimeTypeKey];
     
     
     if (filename == nil)
@@ -1165,10 +1167,16 @@ static NSMutableDictionary* AFCache_contextCache = nil;
 
     
     [urlRequest setHTTPMethod:@"POST"];
+    
+     // set Content-Type in HTTP header
     if (contentType == nil)
     {
         contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundary];
     }
+   
+    [urlRequest setValue:contentType forHTTPHeaderField: @"Content-Type"];
+
+
     
     // post body
     NSMutableData *body = [NSMutableData data];
@@ -1196,7 +1204,7 @@ static NSMutableDictionary* AFCache_contextCache = nil;
                            fieldName,filename]
                           dataUsingEncoding:NSUTF8StringEncoding]];
         [body appendData:[[NSString stringWithFormat:@"Content-Type: %@\r\n\r\n",
-                           contentType]
+                           mimeType]
                           dataUsingEncoding:NSUTF8StringEncoding]];
         [body appendData:data];
         [body appendData:[[NSString stringWithFormat:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
@@ -1207,6 +1215,7 @@ static NSMutableDictionary* AFCache_contextCache = nil;
     
     // setting the body of the post to the reqeust
     [urlRequest setHTTPBody:body];
+ 
     
     return urlRequest;
 }

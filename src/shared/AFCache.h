@@ -95,7 +95,8 @@ extern NSString *kAFCacheHTTPPostUploadFileNameKey;
 //set the content type for HTTP Header ... if not set then it will be set to multipart/form-data
 extern NSString *kAFCacheHTTPHeaderContentTypeKey;
 
-
+//set the mime type for file to be uploaded 
+extern NSString *kAFCacheHTTPPostUploadMimeTypeKey;
 
 
 enum {
