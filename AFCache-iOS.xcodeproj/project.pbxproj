@@ -11,7 +11,6 @@
 		051B387C1328AACA0057F2F5 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 051B387B1328AACA0057F2F5 /* UIKit.framework */; };
 		051B387D1328AACA0057F2F5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 051B38701328AACA0057F2F5 /* Foundation.framework */; };
 		051B387F1328AACA0057F2F5 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 051B387E1328AACA0057F2F5 /* CoreGraphics.framework */; };
-		051B38821328AACA0057F2F5 /* libAFCache-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 051B386D1328AACA0057F2F5 /* libAFCache-iOS.a */; };
 		0544C870150F57980057EC39 /* AFMediaTypeParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 0544C86E150F57980057EC39 /* AFMediaTypeParser.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		0544C871150F57980057EC39 /* AFMediaTypeParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 0544C86F150F57980057EC39 /* AFMediaTypeParser.m */; };
 		0566AE021332D6B500583E6A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 051B387B1328AACA0057F2F5 /* UIKit.framework */; };
@@ -23,7 +22,6 @@
 		0566AE341332D6FD00583E6A /* NSURLRequest.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0566AE2B1332D6FD00583E6A /* NSURLRequest.xib */; };
 		0566AE351332D6FD00583E6A /* Packaging.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0566AE2C1332D6FD00583E6A /* Packaging.xib */; };
 		0566AE361332D6FD00583E6A /* PackagingDemoController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0566AE2E1332D6FD00583E6A /* PackagingDemoController.m */; };
-		0566AE391332D7A900583E6A /* libAFCache-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 051B386D1328AACA0057F2F5 /* libAFCache-iOS.a */; };
 		0566AE3B1332D7E300583E6A /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0566AE3A1332D7E300583E6A /* SystemConfiguration.framework */; };
 		0566AE411332D85600583E6A /* CacheableItemDemoController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0566AE3D1332D85600583E6A /* CacheableItemDemoController.m */; };
 		0566AE421332D85600583E6A /* CacheableItemDemoController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0566AE3E1332D85600583E6A /* CacheableItemDemoController.xib */; };
@@ -55,9 +53,6 @@
 		0569DEA81328AD9C00B3D016 /* ZipArchive.m in Sources */ = {isa = PBXBuildFile; fileRef = 0569DE761328AD9C00B3D016 /* ZipArchive.m */; };
 		0569DEA91328AD9C00B3D016 /* ZipArchive.m in Sources */ = {isa = PBXBuildFile; fileRef = 0569DE761328AD9C00B3D016 /* ZipArchive.m */; };
 		0569DEAA1328AD9C00B3D016 /* AFCache-iOS-Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = 0569DE781328AD9C00B3D016 /* AFCache-iOS-Prefix.pch */; settings = {ATTRIBUTES = (Public, ); }; };
-		0569DEAF1328AD9C00B3D016 /* AFCache+Mimetypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 0569DE7F1328AD9C00B3D016 /* AFCache+Mimetypes.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		0569DEB01328AD9C00B3D016 /* AFCache+Mimetypes.m in Sources */ = {isa = PBXBuildFile; fileRef = 0569DE801328AD9C00B3D016 /* AFCache+Mimetypes.m */; };
-		0569DEB11328AD9C00B3D016 /* AFCache+Mimetypes.m in Sources */ = {isa = PBXBuildFile; fileRef = 0569DE801328AD9C00B3D016 /* AFCache+Mimetypes.m */; };
 		0569DEB21328AD9C00B3D016 /* AFCache+Packaging.h in Headers */ = {isa = PBXBuildFile; fileRef = 0569DE811328AD9C00B3D016 /* AFCache+Packaging.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		0569DEB31328AD9C00B3D016 /* AFCache+Packaging.m in Sources */ = {isa = PBXBuildFile; fileRef = 0569DE821328AD9C00B3D016 /* AFCache+Packaging.m */; };
 		0569DEB41328AD9C00B3D016 /* AFCache+Packaging.m in Sources */ = {isa = PBXBuildFile; fileRef = 0569DE821328AD9C00B3D016 /* AFCache+Packaging.m */; };
@@ -107,7 +102,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		051B386D1328AACA0057F2F5 /* libAFCache-iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libAFCache-iOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		051B38701328AACA0057F2F5 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		051B387A1328AACA0057F2F5 /* AFCache-iOSTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "AFCache-iOSTests.octest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		051B387B1328AACA0057F2F5 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -154,8 +148,6 @@
 		0569DE751328AD9C00B3D016 /* ZipArchive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZipArchive.h; sourceTree = "<group>"; };
 		0569DE761328AD9C00B3D016 /* ZipArchive.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZipArchive.m; sourceTree = "<group>"; };
 		0569DE781328AD9C00B3D016 /* AFCache-iOS-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AFCache-iOS-Prefix.pch"; sourceTree = "<group>"; };
-		0569DE7F1328AD9C00B3D016 /* AFCache+Mimetypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AFCache+Mimetypes.h"; sourceTree = "<group>"; };
-		0569DE801328AD9C00B3D016 /* AFCache+Mimetypes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AFCache+Mimetypes.m"; sourceTree = "<group>"; };
 		0569DE811328AD9C00B3D016 /* AFCache+Packaging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AFCache+Packaging.h"; sourceTree = "<group>"; };
 		0569DE821328AD9C00B3D016 /* AFCache+Packaging.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AFCache+Packaging.m"; sourceTree = "<group>"; };
 		0569DE831328AD9C00B3D016 /* AFCache+PrivateAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AFCache+PrivateAPI.h"; sourceTree = "<group>"; };
@@ -177,6 +169,7 @@
 		0569DE931328AD9C00B3D016 /* DateParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DateParser.m; sourceTree = "<group>"; };
 		058339CB150CB747005A6D55 /* AFHTTPURLProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPURLProtocol.h; sourceTree = "<group>"; };
 		058339CC150CB747005A6D55 /* AFHTTPURLProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPURLProtocol.m; sourceTree = "<group>"; };
+		DAFF0B5C165803C900A56ECE /* libAFCache-iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libAFCache-iOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -195,7 +188,6 @@
 				051B387C1328AACA0057F2F5 /* UIKit.framework in Frameworks */,
 				051B387D1328AACA0057F2F5 /* Foundation.framework in Frameworks */,
 				051B387F1328AACA0057F2F5 /* CoreGraphics.framework in Frameworks */,
-				051B38821328AACA0057F2F5 /* libAFCache-iOS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -205,7 +197,6 @@
 			files = (
 				0566AE581332DA2500583E6A /* libz.dylib in Frameworks */,
 				0566AE3B1332D7E300583E6A /* SystemConfiguration.framework in Frameworks */,
-				0566AE391332D7A900583E6A /* libAFCache-iOS.a in Frameworks */,
 				0566AE021332D6B500583E6A /* UIKit.framework in Frameworks */,
 				0566AE031332D6B500583E6A /* Foundation.framework in Frameworks */,
 				0566AE041332D6B500583E6A /* CoreGraphics.framework in Frameworks */,
@@ -220,7 +211,6 @@
 			children = (
 				0566AE571332DA2500583E6A /* libz.dylib */,
 				0566AE3A1332D7E300583E6A /* SystemConfiguration.framework */,
-				051B386D1328AACA0057F2F5 /* libAFCache-iOS.a */,
 				0569DE641328AD9C00B3D016 /* src */,
 				0569DE571328AD5B00B3D016 /* test */,
 				0566AE051332D6B500583E6A /* AFCacheDemo */,
@@ -234,6 +224,7 @@
 			children = (
 				051B387A1328AACA0057F2F5 /* AFCache-iOSTests.octest */,
 				0566AE001332D6B500583E6A /* AFCacheDemo.app */,
+				DAFF0B5C165803C900A56ECE /* libAFCache-iOS.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -376,8 +367,6 @@
 			children = (
 				0544C86E150F57980057EC39 /* AFMediaTypeParser.h */,
 				0544C86F150F57980057EC39 /* AFMediaTypeParser.m */,
-				0569DE7F1328AD9C00B3D016 /* AFCache+Mimetypes.h */,
-				0569DE801328AD9C00B3D016 /* AFCache+Mimetypes.m */,
 				0569DE811328AD9C00B3D016 /* AFCache+Packaging.h */,
 				0569DE821328AD9C00B3D016 /* AFCache+Packaging.m */,
 				0569DE831328AD9C00B3D016 /* AFCache+PrivateAPI.h */,
@@ -418,7 +407,6 @@
 				0569DEA61328AD9C00B3D016 /* zip.h in Headers */,
 				0569DEA71328AD9C00B3D016 /* ZipArchive.h in Headers */,
 				0569DEAA1328AD9C00B3D016 /* AFCache-iOS-Prefix.pch in Headers */,
-				0569DEAF1328AD9C00B3D016 /* AFCache+Mimetypes.h in Headers */,
 				0569DEB21328AD9C00B3D016 /* AFCache+Packaging.h in Headers */,
 				0569DEB51328AD9C00B3D016 /* AFCache+PrivateAPI.h in Headers */,
 				0569DEB61328AD9C00B3D016 /* AFCache.h in Headers */,
@@ -452,7 +440,7 @@
 			);
 			name = "AFCache-iOS";
 			productName = "AFCache-iOS";
-			productReference = 051B386D1328AACA0057F2F5 /* libAFCache-iOS.a */;
+			productReference = DAFF0B5C165803C900A56ECE /* libAFCache-iOS.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 		051B38791328AACA0057F2F5 /* AFCache-iOSTests */ = {
@@ -573,7 +561,6 @@
 				0569DEA11328AD9C00B3D016 /* unzip.c in Sources */,
 				0569DEA41328AD9C00B3D016 /* zip.c in Sources */,
 				0569DEA81328AD9C00B3D016 /* ZipArchive.m in Sources */,
-				0569DEB01328AD9C00B3D016 /* AFCache+Mimetypes.m in Sources */,
 				0569DEB31328AD9C00B3D016 /* AFCache+Packaging.m in Sources */,
 				0569DEB71328AD9C00B3D016 /* AFCache.m in Sources */,
 				0569DEBB1328AD9C00B3D016 /* AFCacheableItem+Packaging.m in Sources */,
@@ -598,7 +585,6 @@
 				0569DEA21328AD9C00B3D016 /* unzip.c in Sources */,
 				0569DEA51328AD9C00B3D016 /* zip.c in Sources */,
 				0569DEA91328AD9C00B3D016 /* ZipArchive.m in Sources */,
-				0569DEB11328AD9C00B3D016 /* AFCache+Mimetypes.m in Sources */,
 				0569DEB41328AD9C00B3D016 /* AFCache+Packaging.m in Sources */,
 				0569DEB81328AD9C00B3D016 /* AFCache.m in Sources */,
 				0569DEBC1328AD9C00B3D016 /* AFCacheableItem+Packaging.m in Sources */,

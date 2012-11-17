@@ -18,10 +18,9 @@
  *
  */
 
-#import <TargetConditionals.h>
 
+#import <TargetConditionals.h>
 #import "AFCache+PrivateAPI.h"
-#import "AFCache+Mimetypes.h"
 #import <Foundation/NSPropertyList.h>
 #import "DateParser.h"
 #import "AFHTTPURLProtocol.h"
@@ -63,6 +62,8 @@ const NSString *kAFCacheFailOnStatusCodeAbove400Key = @"kAFCacheFailOnStatusCode
 NSString *kAFCacheHTTPPostUploadDataKey = @"kAFCacheHTTPPostUploadDataKey";
 NSString *kAFCacheHTTPPostUploadFieldNameKey = @"kAFCacheHTTPPostUploadFieldNameKey";
 NSString *kAFCacheHTTPPostUploadFileNameKey = @"kAFCacheHTTPPostUploadFileNameKey";
+NSString *kAFCacheHTTPPostUploadParamsKey = @"kAFCacheHTTPPostUploadParamsKey";
+NSString *kAFCacheHTTPPostUploadMimeTypeKey = @"kAFCacheHTTPPostUploadMimeTypeKey";
 
 extern NSString* const UIApplicationWillResignActiveNotification;
 
@@ -95,6 +96,112 @@ static NSMutableDictionary* AFCache_contextCache = nil;
 @dynamic isConnectedToNetwork;
 
 #pragma mark init methods
+
+- (void)initMimeTypes
+{
+	self.suffixToMimeTypeMap = [NSDictionary dictionaryWithObjectsAndKeys:
+								@"application/msword",				        @".doc",
+								@"application/msword",						@".dot",
+								@"application/vnd.ms-excel",			    @".xls",
+								@"application/vnd.ms-excel",				@".xlt",
+								@"text/comma-separated-values",             @".csv",
+								@"text/tab-separated-values",               @".tab",
+								@"text/tab-separated-values",				@".tsv",
+								@"application/vnd.ms-powerpoint",           @".ppt",
+								@"application/vnd.ms-project",              @".mpp",
+								@"application/vnd.ms-works",                @".wps",
+								@"application/vnd.ms-works",				@".wdb",
+								@"application/x-visio",                     @".vsd",
+								@"application/x-visio",                     @".vst",
+								@"application/x-visio",						@".vsw",
+								@"application/wordperfect",                 @".wpd",
+								@"application/wordperfect",                 @".wp5",
+								@"application/wordperfect",					@".wp6",
+								@"application/rtf",                         @".rtf",
+								@"text/plain",                              @".txt",
+								@"text/plain",							    @".text",
+								@"text/html",                               @".html",
+								@"text/html",						        @".htm",
+								@"application/hta",                         @".hta",
+								@"message/rfc822",						    @".mime",
+								@"text/xml",                                @".xml",
+								@"text/xml",                                @".xsl",
+								@"text/xml",		                        @".xslt",
+								@"application/xhtml+xml",                   @".html",
+								@"application/xhtml+xml",                   @".xhtml",
+								@"application/xml-dtd",                     @".dtd",
+								@"application/xml-external-parsed-entity",  @".xml",
+								@"text/sgml",                               @".sgm",
+								@"text/sgml",                               @".sgml",
+								@"text/css",                                @".css",
+								@"text/javascript",                         @".js",
+								@"application/x-javascript",                @".ls",
+								@"image/gif",		                        @".gif",
+								@"image/jpeg",                              @".jpg",
+								@"image/jpeg",                              @".jpeg",
+								@"image/jpeg",						        @".jpe",
+								@"image/png",							    @".png",
+								@"image/tiff",                              @".tif",
+								@"image/tiff",                              @".tiff",
+								@"image/bmp",                               @".bmp",
+								@"image/x-pict",                            @".pict",
+								@"image/x-icon",                            @".ico",
+								@"image/x-icon",                            @".icl",
+								@"image/vnd.dwg",                           @".dwg",
+								@"audio/x-wav",                             @".wav",
+								@"audio/x-mpeg",                            @".mpa",
+								@"audio/x-mpeg",                            @".abs",
+								@"audio/x-mpeg",                            @".mpega",
+								@"audio/x-mpeg",                            @".mp3",
+								@"audio/x-mpeg-2",                          @".mp2a",
+								@"audio/x-mpeg-2",                          @".mpa2",
+								@"application/x-pn-realaudio",              @".ra",
+								@"application/x-pn-realaudio",              @".ram",
+								@"application/vnd.rn-realmedia",            @".rm",
+								@"audio/x-aiff",                            @".aif",
+								@"audio/x-aiff",                            @".aiff",
+								@"audio/x-aiff",                            @".aifc",
+								@"audio/x-midi",                            @".mid",
+								@"audio/x-midi",                            @".midi",
+								@"video/mpeg",                              @".mpeg",
+								@"video/mpeg",                              @".mpg",
+								@"video/mpeg",                              @".mpe",
+								@"video/mpeg-2",                            @".mpv2",
+								@"video/mpeg-2",                            @".mp2v",
+								@"video/quicktime",                         @".mov",
+								@"video/quicktime",                         @".moov",
+								@"video/x-msvideo",                         @".avi",
+								@"application/pdf",                         @".pdf",
+								@"application/postscript",                  @".ps",
+								@"application/postscript",                  @".ai",
+								@"application/postscript",                  @".eps",
+								@"application/zip",                         @".zip",
+								@"application/x-compressed",                @".tar.gz",
+								@"application/x-compressed",                @".tgz",
+								@"application/x-gzip",                      @".gz",
+								@"application/x-gzip",                      @".gzip",
+								@"application/x-bzip2",                     @".bz2",
+								@"application/x-stuffit",                   @".sit",
+								@"application/x-stuffit",                   @".sea",
+								@"application/mac-binhex40",                @".hqx",
+								@"application/octet-stream",                @".bin",
+								@"application/octet-stream",                @".uu",
+								@"application/octet-stream",                @".exe",
+								@"application/vnd.sun.xml.writer",          @".sxw",
+								@"application/vnd.sun.xml.writer",          @".sxg",
+								@"application/vnd.sun.xml.writer.template", @".sxw",
+								@"application/vnd.sun.xml.calc",            @".sxc",
+								@"application/vnd.sun.xml.calc.template",   @".stc",
+								@"application/vnd.sun.xml.draw",            @".sxd",
+								@"application/vnd.sun.xml.draw",            @".std",
+								@"application/vnd.sun.xml.impress",         @".sxi",
+								@"application/vnd.sun.xml.impress",			@".sti",
+								@"application/vnd.stardivision.writer",     @".sdw",
+								@"application/vnd.stardivision.writer",     @".sgl",
+								@"application/vnd.stardivision.calc",       @".sdc",
+								@"image/svg+xml",                           @".svg",
+								nil];
+}
 
 - (id)initWithContext:(NSString*)context {
     if (nil == context && sharedAFCacheInstance != nil)
@@ -136,6 +243,8 @@ static NSMutableDictionary* AFCache_contextCache = nil;
 	}
 	return self;
 }
+
+
 
 - (void)resignActive {
     [archiveTimer invalidate];
@@ -1026,9 +1135,9 @@ static NSMutableDictionary* AFCache_contextCache = nil;
 {
     NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:url];
    
-    NSData *data = [[item userData] valueForKey:kAFCacheHTTPPostUploadDataKey];
-  
-    if (data == nil)
+    NSArray *params = [[item userData] valueForKey:kAFCacheHTTPPostUploadParamsKey];
+    
+    if (params == nil)
     {
         return urlRequest;
     }
@@ -1040,6 +1149,9 @@ static NSMutableDictionary* AFCache_contextCache = nil;
     
     NSString *fieldName = [[item userData] valueForKey:kAFCacheHTTPPostUploadFieldNameKey];
     NSString *filename = [[item userData] valueForKey:kAFCacheHTTPPostUploadFileNameKey];
+    NSString *mimeType = [[item userData] valueForKey:kAFCacheHTTPPostUploadMimeTypeKey];
+    NSData *data = [[item userData] valueForKey:kAFCacheHTTPPostUploadDataKey];
+    
     
     if (filename == nil)
     {
@@ -1047,31 +1159,108 @@ static NSMutableDictionary* AFCache_contextCache = nil;
     }
     
     
-    NSString *boundry = @"0xKhTmLbOuNdArY";
+    NSString *boundary = @"0xKhTmLbOuNdArY";
        
+//    [urlRequest setHTTPMethod:@"POST"];
+//    [urlRequest setValue:
+//     [NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundary]
+//      forHTTPHeaderField:@"Content-Type"];
+//    
+//    NSMutableData *postData =
+//    [NSMutableData dataWithCapacity:[data length] + 1024];
+// 
+//    [postData appendData:
+//     [[NSString stringWithFormat:@"%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+//    
+//    
+//    
+//    // add the version
+//    [postData appendData:[
+//                          @"Content-Disposition: form-data; name=\"version\"\r\n\r\n"
+//                          dataUsingEncoding:NSUTF8StringEncoding]];
+//    [postData appendData:[@"1"
+//                          dataUsingEncoding:NSUTF8StringEncoding]];
+//    [postData appendData:
+//     [[NSString stringWithFormat:@"\r\n%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+//    
+//    // add the appkey
+//    [postData appendData:[
+//                          @"Content-Disposition: form-data; name=\"appkey\"\r\n\r\n"
+//                          dataUsingEncoding:NSUTF8StringEncoding]];
+//    [postData appendData:[@"KJREOP13S78CTRSZYJK6"
+//                          dataUsingEncoding:NSUTF8StringEncoding]];
+//    [postData appendData:
+//     [[NSString stringWithFormat:@"\r\n%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+// 
+//    
+//    // add the token
+//    
+//    [postData appendData:[
+//                          @"Content-Disposition: form-data; name=\"token\"\r\n\r\n"
+//                          dataUsingEncoding:NSUTF8StringEncoding]];
+//    [postData appendData:[@"9bd89e64534cff6779681d234edfa2bd01a67845"
+//                          dataUsingEncoding:NSUTF8StringEncoding]];
+//    
+//    [postData appendData:
+//     [[NSString stringWithFormat:@"\r\n%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+//    
+//    
+//    // add the data field name and data
+// 
+//    [postData appendData:
+//     [[NSString stringWithFormat:
+//       @"Content-Disposition: form-data; name=\"%@\"; filename=\"%@\"\r\n\r\n; ", fieldName, filename]
+//      dataUsingEncoding:NSUTF8StringEncoding]];
+//    
+//    // add the data
+//    [postData appendData:data];
+//        
+//    
+//    [urlRequest setHTTPBody:postData];
+    
     [urlRequest setHTTPMethod:@"POST"];
-    [urlRequest setValue:
-     [NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundry]
-      forHTTPHeaderField:@"Content-Type"];
     
-    NSMutableData *postData =
-    [NSMutableData dataWithCapacity:[data length] + 1024];
-    [postData appendData:
-     [[NSString stringWithFormat:@"--%@\r\n", boundry] dataUsingEncoding:NSUTF8StringEncoding]];
-    [postData appendData:
-     [[NSString stringWithFormat:
-       @"Content-Disposition: form-data; name=\"%@\"; filename=\"%@\"\r\n\r\n; ", fieldName, filename]
-      dataUsingEncoding:NSUTF8StringEncoding]];
-    [postData appendData:data];
-    [postData appendData:
-     [[NSString stringWithFormat:@"\r\n--%@--\r\n", boundry] dataUsingEncoding:NSUTF8StringEncoding]];
+    // set Content-Type in HTTP header
+    NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundary];
+    [urlRequest setValue:contentType forHTTPHeaderField: @"Content-Type"];
     
-    [postData appendData:
-     [[NSString stringWithFormat:@"version=1&appkey=KJREOP13S78CTRSZYJK6&token=c8d15b75233d1aa783e8578f943904ebffce62c8"] dataUsingEncoding:NSUTF8StringEncoding]];
+    // post body
+    NSMutableData *body = [NSMutableData data];
     
+    // add params (all params are strings)
+    for (NSDictionary *param in params)
+    {
+        NSString *key = [[param allKeys] lastObject];
+        NSString *value = [param objectForKey:key];
+        
+        [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:
+                           @"Content-Disposition: form-data; name=\"%@\"\r\n\r\n", key]
+                          dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"%@\r\n", value]
+                          dataUsingEncoding:NSUTF8StringEncoding]];
+    }
     
-    [urlRequest setHTTPBody:postData];
+    // add data
+    if (data)
+    {
+        [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:
+                           @"Content-Disposition: form-data; name=\"%@\"; filename=\"%@\"\r\n",
+                           fieldName,filename]
+                          dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"Content-Type: %@\r\n\r\n",
+                           mimeType]
+                          dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:data];
+        [body appendData:[[NSString stringWithFormat:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+    }
     
+    [body appendData:[[NSString stringWithFormat:@"--%@--\r\n", boundary]
+                      dataUsingEncoding:NSUTF8StringEncoding]];
+    
+    // setting the body of the post to the reqeust
+    [urlRequest setHTTPBody:body];
     
     return urlRequest;
 }

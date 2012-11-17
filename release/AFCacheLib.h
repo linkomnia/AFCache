@@ -169,6 +169,7 @@ typedef void (^AFCacheableItemBlock)(AFCacheableItem* item);
     //block to execute when request completes successfully
 	AFCacheableItemBlock completionBlock;
     AFCacheableItemBlock failBlock;
+    AFCacheableItemBlock progressBlock;
 #endif
 }
 
@@ -185,7 +186,7 @@ typedef void (^AFCacheableItemBlock)(AFCacheableItem* item);
 @property (nonatomic, assign) SEL connectionDidFailSelector;
 @property (nonatomic, assign) int cacheStatus;
 @property (nonatomic, retain) AFCacheableItemInfo *info;
-@property (nonatomic, assign) id userData;
+@property (nonatomic, retain) NSDictionary* userData;
 @property (nonatomic, assign) BOOL isPackageArchive;
 @property (nonatomic, assign) uint64_t currentContentLength;
 @property (nonatomic, retain) NSString *username;
@@ -292,7 +293,7 @@ typedef void (^AFCacheableItemBlock)(AFCacheableItem* item);
 #define kAFCacheDefaultMaxFileSize 1000000
 
 // max number of concurrent connections 
-#define kAFCacheDefaultConcurrentConnections 3
+#define kAFCacheDefaultConcurrentConnections 5
 
 #define kHTTPHeaderIfModifiedSince @"If-Modified-Since"
 #define kHTTPHeaderIfNoneMatch @"If-None-Match"
@@ -316,6 +317,36 @@ extern const char* kAFCacheContentLengthFileAttribute;
 extern const char* kAFCacheDownloadingFileAttribute;
 extern const double kAFCacheInfiniteFileSize;
 
+
+/*
+ *
+ * Those keys can be used for the userData Dictionary
+ * to change some values / settings for a specific request
+ * you can even now use AFCache to upload files see
+ */
+extern const NSString *kAFCacheUserAgentKey;    // can be used as key to change the user agent for a specific request
+extern const NSString *kAFCacheDisableSSLCertificateValidationKey;  // can be used as key to ignore the invalid SSL certificates for a specific request
+extern const NSString *kAFCacheFailOnStatusCodeAbove400Key;     // if the request should fail aboove 400 error
+
+/*
+ *   posting data to the server
+ */
+// set variables for the post request -- Add NSDictionaries to an array as value for that key
+extern NSString *kAFCacheHTTPPostUploadParamsKey;
+
+//  use this key to post NSData as value i.e.  @{kAFCacheHTTPPostUploadDataKey : yourNSDataObject}
+extern NSString *kAFCacheHTTPPostUploadDataKey;
+
+// you also need the http element name where to post the file
+extern NSString *kAFCacheHTTPPostUploadFieldNameKey;
+
+// set the filename for the uploaded file
+extern NSString *kAFCacheHTTPPostUploadFileNameKey;
+
+//set the mime type for file up upload
+extern NSString *kAFCacheHTTPPostUploadMimeTypeKey;
+
+
 enum {
 	kAFCacheInvalidateEntry         = 1 << 9,
 	kAFIgnoreError                  = 1 << 11,
@@ -336,8 +367,9 @@ typedef struct NetworkTimeoutIntervals {
 @class AFCache;
 @class AFCacheableItem;
 
-@interface AFCache : NSObject {
-	BOOL cacheEnabled;
+@interface AFCache : NSObject 
+{
+    BOOL cacheEnabled;
 	NSString *dataPath;
 	NSMutableDictionary *cacheInfoStore;
     
@@ -367,29 +399,106 @@ typedef struct NetworkTimeoutIntervals {
 }
 
 
-@property BOOL cacheEnabled;
-@property (nonatomic, copy) NSString *dataPath;
-@property (nonatomic, retain) NSMutableDictionary *cacheInfoStore;
+/*
+ *  enable or disable the Cache
+ */
+@property (nonatomic, assign) BOOL cacheEnabled;
 
-@property (nonatomic, retain) NSMutableDictionary *pendingConnections;
-@property (nonatomic, retain) NSMutableArray *downloadQueue;
-@property (nonatomic, retain) NSDictionary *suffixToMimeTypeMap;
-@property (nonatomic, retain) NSDictionary *clientItems;
+
+/*
+ *  get the pending connections - URL as key returns a AFCacheableItem 
+ */
+@property (nonatomic, readonly) NSDictionary *pendingConnections;
+
+/*
+ *  set the timeout for IMSRequest (default = 45 sec)
+ *                      GETRequest (default = 100 sec)
+ *                      PackageRequest (default = 100 sec)
+ */
+@property (nonatomic, assign) NetworkTimeoutIntervals networkTimeoutIntervals;
+
+
+/*
+ *  the current items in the download queue
+ */
+@property (nonatomic, readonly) NSArray *itemsInDownloadQueue;
+
+
+/*
+ * change your user agent - do not abuse it
+ */
 @property (nonatomic, retain) NSString* userAgent;
+
+
+/*
+ * set the path for your cachestore
+ */
+@property (nonatomic, copy) NSString *dataPath;
+
+/*
+ * set the number of maximum concurrent downloadble items 
+ * Default is 5
+ */
+@property (nonatomic, assign) int concurrentConnections;
+
+/*
+ * set the download permission 
+ * Default is YES
+ */
+@property (nonatomic, assign) BOOL downloadPermission;
+
+/*
+ * the download fails if HTTP error is above 400
+ * Default is YES
+ */
+@property (nonatomic, assign) BOOL failOnStatusCodeAbove400;
+
+
+/*
+ * the items will be cached in the cachestore with a hashed filename instead of the URL path
+ * Default is YES
+ */
+@property (nonatomic, assign) BOOL cacheWithHashname;
+
+
+/*
+ * the items will be cached in the cachestore without any URL parameter
+ * Default is NO
+ */
+@property (nonatomic, assign) BOOL cacheWithoutUrlParameter;
+
+/*
+ * the items will be cached in the cachestore without the hostname
+ * Default is NO
+ */
+@property (nonatomic, assign) BOOL cacheWithoutHostname;
+
+/*
+ * pause the downloads. cancels any running downloads and puts them back into the queue
+ */
+@property (nonatomic, assign) BOOL pauseDownload;
+
+/*
+ * check if we have an internet connection. can be observed
+ */
+@property (nonatomic, readonly) BOOL isConnectedToNetwork;  
+
+/*
+ * ignore any invalid SSL certificates
+ * be careful with invalid SSL certificates! use only for testing or debugging
+ * Default is NO
+ */
+@property (nonatomic, assign) BOOL disableSSLCertificateValidation;
+
+
+
+@property (nonatomic, retain) NSMutableDictionary *cacheInfoStore;
+@property (nonatomic, retain) NSDictionary *suffixToMimeTypeMap;
+@property (nonatomic, retain) NSMutableDictionary *packageInfos;
+@property (nonatomic, retain) NSDictionary *clientItems;
 @property (nonatomic, assign) double maxItemFileSize;
 @property (nonatomic, assign) double diskCacheDisplacementTresholdSize;
-@property (nonatomic, assign) int concurrentConnections;
-@property BOOL downloadPermission;
-@property (nonatomic, assign) NetworkTimeoutIntervals networkTimeoutIntervals;
-@property (nonatomic, retain) NSMutableDictionary *packageInfos;
-@property (nonatomic, assign) BOOL failOnStatusCodeAbove400;
-@property (nonatomic, assign) BOOL cacheWithoutUrlParameter; // will be cached in the cachestore with any URL parameter
-@property (nonatomic, assign) BOOL cacheWithoutHost;        // will be cached in the cachestore with the hostname 
-@property (nonatomic, assign) BOOL pauseDownload;
-@property (nonatomic, readonly) BOOL isConnectedToNetwork;  // Observable
 
-// be careful with invalid SSL certificates! use only for testing or debugging
-@property (nonatomic, assign) BOOL disableSSLCertificateValidation;
 
 
 + (NSString*)rootPath;
@@ -400,6 +509,7 @@ typedef struct NetworkTimeoutIntervals {
 - (NSString *)filenameForURLString: (NSString *) URLString;
 - (NSString *)filePath: (NSString *) filename;
 - (NSString *)filePathForURL: (NSURL *) url;
+- (NSString *)fullPathForCacheableItem:(AFCacheableItem*)item;
 
 
 + (AFCache *)sharedInstance;
@@ -424,7 +534,7 @@ typedef struct NetworkTimeoutIntervals {
 							   delegate: (id) aDelegate 
 							   selector: (SEL) aSelector 
 								options: (int) options
-                               userData:(id)userData;
+                               userData: (NSDictionary*)userData;
 
 - (AFCacheableItem *)cachedObjectForURL: (NSURL *) url 
 							   delegate: (id) aDelegate 
@@ -437,7 +547,7 @@ typedef struct NetworkTimeoutIntervals {
 							   selector: (SEL) aSelector 
 						didFailSelector: (SEL) aFailSelector 
 								options: (int) options
-                               userData: (id)userData
+                               userData: (NSDictionary*)userData
 							   username: (NSString *)aUsername
 							   password: (NSString *)aPassword
                                 request: (NSURLRequest*)aRequest;
@@ -450,7 +560,7 @@ typedef struct NetworkTimeoutIntervals {
                               failBlock: (id)aFailBlock  
                           progressBlock: (id)aProgressBlock
 								options: (int)options
-                               userData: (id)userData
+                               userData: (NSDictionary*)userData
 							   username: (NSString *)aUsername
 							   password: (NSString *)aPassword
                                 request: (NSURLRequest*)aRequest;
@@ -491,7 +601,6 @@ typedef struct NetworkTimeoutIntervals {
  * Flush and start loading all items in the  queue
  */
 - (void)flushDownloadQueue;
-- (NSString *)fullPathForCacheableItemInfo:(AFCacheableItemInfo*)info;
 
 
 @end
@@ -521,7 +630,7 @@ typedef struct NetworkTimeoutIntervals {
                         completionBlock: (AFCacheableItemBlock)aCompletionBlock 
                               failBlock: (AFCacheableItemBlock)aFailBlock  
 								options: (int) options
-                               userData: (id)userData
+                               userData: (NSDictionary*)userData
 							   username: (NSString *)aUsername
 							   password: (NSString *)aPassword;
 
@@ -532,7 +641,7 @@ typedef struct NetworkTimeoutIntervals {
                               failBlock: (AFCacheableItemBlock)aFailBlock  
                           progressBlock: (AFCacheableItemBlock)aProgressBlock
 								options: (int) options
-                               userData: (id)userData
+                               userData: (NSDictionary*)userData
 							   username: (NSString *)aUsername
 							   password: (NSString *)aPassword;
 
