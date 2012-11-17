@@ -62,8 +62,9 @@ const NSString *kAFCacheFailOnStatusCodeAbove400Key = @"kAFCacheFailOnStatusCode
 NSString *kAFCacheHTTPPostUploadDataKey = @"kAFCacheHTTPPostUploadDataKey";
 NSString *kAFCacheHTTPPostUploadFieldNameKey = @"kAFCacheHTTPPostUploadFieldNameKey";
 NSString *kAFCacheHTTPPostUploadFileNameKey = @"kAFCacheHTTPPostUploadFileNameKey";
-NSString *kAFCacheHTTPPostUploadParamsKey = @"kAFCacheHTTPPostUploadParamsKey";
-NSString *kAFCacheHTTPPostUploadMimeTypeKey = @"kAFCacheHTTPPostUploadMimeTypeKey";
+NSString *kAFCacheHTTPPostParamsKey = @"kAFCacheHTTPPostParamsKey";
+NSString *kAFCacheHTTPHeaderContentTypeKey = @"kAFCacheHTTPHeaderContentTypeKey";
+
 
 extern NSString* const UIApplicationWillResignActiveNotification;
 
@@ -1135,9 +1136,10 @@ static NSMutableDictionary* AFCache_contextCache = nil;
 {
     NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:url];
    
-    NSArray *params = [[item userData] valueForKey:kAFCacheHTTPPostUploadParamsKey];
+    NSArray *params = [[item userData] valueForKey:kAFCacheHTTPPostParamsKey];
+    NSData *data = [[item userData] valueForKey:kAFCacheHTTPPostUploadDataKey];
     
-    if (params == nil)
+    if (params == nil && data == nil)
     {
         return urlRequest;
     }
@@ -1149,8 +1151,7 @@ static NSMutableDictionary* AFCache_contextCache = nil;
     
     NSString *fieldName = [[item userData] valueForKey:kAFCacheHTTPPostUploadFieldNameKey];
     NSString *filename = [[item userData] valueForKey:kAFCacheHTTPPostUploadFileNameKey];
-    NSString *mimeType = [[item userData] valueForKey:kAFCacheHTTPPostUploadMimeTypeKey];
-    NSData *data = [[item userData] valueForKey:kAFCacheHTTPPostUploadDataKey];
+    NSString *contentType = [[item userData] valueForKey:kAFCacheHTTPHeaderContentTypeKey];
     
     
     if (filename == nil)
@@ -1161,68 +1162,13 @@ static NSMutableDictionary* AFCache_contextCache = nil;
     
     NSString *boundary = @"0xKhTmLbOuNdArY";
        
-//    [urlRequest setHTTPMethod:@"POST"];
-//    [urlRequest setValue:
-//     [NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundary]
-//      forHTTPHeaderField:@"Content-Type"];
-//    
-//    NSMutableData *postData =
-//    [NSMutableData dataWithCapacity:[data length] + 1024];
-// 
-//    [postData appendData:
-//     [[NSString stringWithFormat:@"%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-//    
-//    
-//    
-//    // add the version
-//    [postData appendData:[
-//                          @"Content-Disposition: form-data; name=\"version\"\r\n\r\n"
-//                          dataUsingEncoding:NSUTF8StringEncoding]];
-//    [postData appendData:[@"1"
-//                          dataUsingEncoding:NSUTF8StringEncoding]];
-//    [postData appendData:
-//     [[NSString stringWithFormat:@"\r\n%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-//    
-//    // add the appkey
-//    [postData appendData:[
-//                          @"Content-Disposition: form-data; name=\"appkey\"\r\n\r\n"
-//                          dataUsingEncoding:NSUTF8StringEncoding]];
-//    [postData appendData:[@"KJREOP13S78CTRSZYJK6"
-//                          dataUsingEncoding:NSUTF8StringEncoding]];
-//    [postData appendData:
-//     [[NSString stringWithFormat:@"\r\n%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-// 
-//    
-//    // add the token
-//    
-//    [postData appendData:[
-//                          @"Content-Disposition: form-data; name=\"token\"\r\n\r\n"
-//                          dataUsingEncoding:NSUTF8StringEncoding]];
-//    [postData appendData:[@"9bd89e64534cff6779681d234edfa2bd01a67845"
-//                          dataUsingEncoding:NSUTF8StringEncoding]];
-//    
-//    [postData appendData:
-//     [[NSString stringWithFormat:@"\r\n%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-//    
-//    
-//    // add the data field name and data
-// 
-//    [postData appendData:
-//     [[NSString stringWithFormat:
-//       @"Content-Disposition: form-data; name=\"%@\"; filename=\"%@\"\r\n\r\n; ", fieldName, filename]
-//      dataUsingEncoding:NSUTF8StringEncoding]];
-//    
-//    // add the data
-//    [postData appendData:data];
-//        
-//    
-//    [urlRequest setHTTPBody:postData];
+
     
     [urlRequest setHTTPMethod:@"POST"];
-    
-    // set Content-Type in HTTP header
-    NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundary];
-    [urlRequest setValue:contentType forHTTPHeaderField: @"Content-Type"];
+    if (contentType == nil)
+    {
+        contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundary];
+    }
     
     // post body
     NSMutableData *body = [NSMutableData data];
@@ -1250,7 +1196,7 @@ static NSMutableDictionary* AFCache_contextCache = nil;
                            fieldName,filename]
                           dataUsingEncoding:NSUTF8StringEncoding]];
         [body appendData:[[NSString stringWithFormat:@"Content-Type: %@\r\n\r\n",
-                           mimeType]
+                           contentType]
                           dataUsingEncoding:NSUTF8StringEncoding]];
         [body appendData:data];
         [body appendData:[[NSString stringWithFormat:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
