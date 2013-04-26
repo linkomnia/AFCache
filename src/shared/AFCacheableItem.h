@@ -32,7 +32,7 @@
 @class AFCacheableItem;
 @protocol AFCacheableItemDelegate;
 
-enum kCacheStatus {
+typedef NS_ENUM(NSUInteger, AFCacheStatus)  {
 	kCacheStatusNew = 0,
 	kCacheStatusFresh = 1, // written into cacheableitem when item is fresh, either after fetching it for the first time or by revalidation.
 	kCacheStatusModified = 2, // if ims request returns status 200
@@ -48,72 +48,35 @@ typedef void (^AFCacheableItemBlock)(AFCacheableItem* item);
 
 
 @interface AFCacheableItem : NSObject {
-	NSURL *url;
-    NSURLRequest *request;
-	NSData *data;
-	AFCache *cache;
-	id <AFCacheableItemDelegate> delegate;
-	BOOL persistable;
-	BOOL ignoreErrors;
-    BOOL justFetchHTTPHeader;
-	SEL connectionDidFinishSelector;
-	SEL connectionDidFailSelector;
-	NSError *error;
-	id userData;
-	
-	// validUntil holds the calculated expire date of the cached object.
-	// It is either equal to Expires (if Expires header is set), or the date
-	// based on the request time + max-age (if max-age header is set).
-	// If neither Expires nor max-age is given or if the resource must not
-	// be cached valitUntil is nil.	
-	NSDate *validUntil;
-	int cacheStatus;
-	AFCacheableItemInfo *info;
-	int tag; // for debugging and testing purposes
-	BOOL isPackageArchive;
-	uint64_t currentContentLength;
-    
-    NSFileHandle*   fileHandle;
-	
-	/*
-	 Some data for the HTTP Basic Authentification
-	 */
-	NSString *username;
-	NSString *password;
-    
-    BOOL    isRevalidating;
-    NSURLRequest *IMSRequest; // last If-modified-Since Request. Just for debugging purposes, will not be persisted.
-    BOOL servedFromCache;
-    BOOL URLInternallyRewritten;
-    BOOL    canMapData;
- 
-#if NS_BLOCKS_AVAILABLE
-    //block to execute when request completes successfully
-	AFCacheableItemBlock completionBlock;
-    AFCacheableItemBlock failBlock;
-    AFCacheableItemBlock progressBlock;
-#endif
 }
 
 @property (nonatomic, readonly) NSURL *url;
 @property (nonatomic, readonly) NSData *data;
 @property (nonatomic, readonly) NSError *error;
-@property (nonatomic, readonly) NSDate *validUntil;
 
 @property (nonatomic, readonly) AFCacheableItemInfo *info;
-@property (nonatomic, retain) NSDictionary* userData;
+@property (nonatomic, retain)   NSDictionary* userData;
 
 
 @property (nonatomic, retain) NSString *username;
 @property (nonatomic, retain) NSString *password;
 
 @property (nonatomic, readonly) uint64_t currentContentLength;
-@property (nonatomic, readonly) int cacheStatus;
-@property (nonatomic, readonly) BOOL isCachedOnDisk;
+@property (nonatomic, readonly) AFCacheStatus cacheStatus;
+
+
 @property (nonatomic, readonly) BOOL isFresh;
 @property (nonatomic, readonly) BOOL isComplete;
-@property (nonatomic, readonly) BOOL isDataLoaded;
 @property (nonatomic, readonly) BOOL isPackageArchive;
 @property (nonatomic, readonly) BOOL servedFromCache;
+@property (nonatomic, readonly) BOOL isDownloading;
+
+
+#if NS_BLOCKS_AVAILABLE
+@property (nonatomic, copy) AFCacheableItemBlock completionBlock;
+@property (nonatomic, copy) AFCacheableItemBlock failBlock;
+@property (nonatomic, copy) AFCacheableItemBlock progressBlock;
+#endif
+
 
 @end

@@ -10,42 +10,35 @@
 #import "AFCacheableItem.h"
 
 @interface AFCacheableItem ()
-@property (nonatomic, retain) AFCache *cache;
+
 @property (nonatomic, retain) NSURL *url;
 @property (nonatomic, retain) NSData *data;
-
-@property (nonatomic, assign) id <AFCacheableItemDelegate> delegate;
 @property (nonatomic, retain) NSError *error;
-@property (nonatomic, retain) NSDate *validUntil;
-
-
+@property (nonatomic, retain) AFCacheableItemInfo *info;
+@property (nonatomic, retain) AFCache *cache;
+@property (nonatomic, assign) id <AFCacheableItemDelegate> delegate;
 @property (nonatomic, assign) SEL connectionDidFinishSelector;
 @property (nonatomic, assign) SEL connectionDidFailSelector;
-@property (nonatomic, assign) int cacheStatus;
-@property (nonatomic, retain) AFCacheableItemInfo *info;
-
 @property (nonatomic, retain) NSFileHandle* fileHandle;
-
+@property (nonatomic, retain) NSDate *validUntil;
 @property (nonatomic, assign) BOOL persistable;
 @property (nonatomic, assign) BOOL ignoreErrors;
 @property (nonatomic, assign) BOOL justFetchHTTPHeader;
-
 @property (nonatomic, assign)   BOOL isRevalidating;
 @property (nonatomic, readonly) BOOL canMapData;
-@property (nonatomic, assign)   BOOL isPackageArchive;
-@property (nonatomic, assign)   BOOL servedFromCache;
 @property (nonatomic, assign)   BOOL URLInternallyRewritten;
-
-@property (nonatomic, assign) uint64_t currentContentLength;
-
 @property (nonatomic, retain) NSURLRequest *IMSRequest;
-
-
 @property (nonatomic, assign) int tag;
+@property (nonatomic, assign) uint64_t currentContentLength;
+@property (nonatomic, assign) AFCacheStatus cacheStatus;
+@property (nonatomic, assign) BOOL isFresh;
+@property (nonatomic, assign) BOOL isComplete;
+@property (nonatomic, assign) BOOL isPackageArchive;
+@property (nonatomic, assign) BOOL servedFromCache;
+@property (nonatomic, assign) BOOL isDownloading;
 
 - (void)setDownloadStartedFileAttributes;
 - (void)setDownloadFinishedFileAttributes;
-- (BOOL)isDownloading;
 - (BOOL)hasDownloadFileAttribute;
 - (BOOL)hasValidContentLength;
 - (uint64_t)getContentLengthFromFile;
@@ -55,13 +48,6 @@
 - (void)signalItemsDidFinish:(NSArray*)items;
 - (void)signalItemsDidFail:(NSArray*)items;
 
-
-
-#if NS_BLOCKS_AVAILABLE
-@property (nonatomic, copy) AFCacheableItemBlock completionBlock;
-@property (nonatomic, copy) AFCacheableItemBlock failBlock;
-@property (nonatomic, copy) AFCacheableItemBlock progressBlock;
-#endif
 
 
 

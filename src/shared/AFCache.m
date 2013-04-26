@@ -24,7 +24,7 @@
 #import <Foundation/NSPropertyList.h>
 #import "DateParser.h"
 #import "AFHTTPURLProtocol.h"
-
+#import "AFCacheableItem+PrivateAPI.h"
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -626,6 +626,7 @@ static NSMutableDictionary* AFCache_contextCache = nil;
         NSError *error = [NSError errorWithDomain:@"URL is not set" code:-1 userInfo:nil];
         AFCacheableItem *item = [[[AFCacheableItem alloc] init] autorelease];
         item.error = error;
+        
         [aDelegate performSelector:aFailSelector withObject:item];
 #if NS_BLOCKS_AVAILABLE
         AFCacheableItemBlock block = (AFCacheableItemBlock)aFailBlock;
@@ -681,7 +682,7 @@ static NSMutableDictionary* AFCache_contextCache = nil;
             }
 			            
             // check validity of cached item
-            if (![item isDataLoaded] &&
+            if ([item data] == nil &&
                 ([item hasDownloadFileAttribute] || ![item hasValidContentLength])) {
 
                 if (nil == [pendingConnections objectForKey:internalURL])

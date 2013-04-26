@@ -33,7 +33,7 @@
 @implementation AFCacheableItem
 
 
-@synthesize url, data, persistable, justFetchHTTPHeader,ignoreErrors;
+@synthesize url, tag, data, persistable, justFetchHTTPHeader,ignoreErrors;
 @synthesize cache, delegate, connectionDidFinishSelector, connectionDidFailSelector, error;
 @synthesize info, validUntil, cacheStatus, userData, isPackageArchive, fileHandle, currentContentLength;
 @synthesize username, password;
@@ -55,7 +55,7 @@
 		connectionDidFinishSelector = @selector(connectionDidFinish:);
 		connectionDidFailSelector = @selector(connectionDidFail:);
         canMapData = YES;
-		self.cacheStatus = kCacheStatusNew;
+		cacheStatus = kCacheStatusNew;
 		info = [[AFCacheableItemInfo alloc] init];
         IMSRequest = nil;
         URLInternallyRewritten = NO;
@@ -149,11 +149,11 @@
 	if (self.cacheStatus==kCacheStatusRevalidationPending) {
 		switch (statusCode) {
 			case 304:
-				self.cacheStatus = kCacheStatusNotModified;
+				cacheStatus = kCacheStatusNotModified;
 				self.validUntil = info.expireDate;
 				return;
 			case 200:
-				self.cacheStatus = kCacheStatusModified;
+				cacheStatus = kCacheStatusModified;
 				
 				break;
 		}
@@ -928,9 +928,7 @@
 	return s;
 }
 
-- (BOOL)isCachedOnDisk {
-	return [CACHED_OBJECTS objectForKey: [url absoluteString]] != nil;
-}
+
 
 - (NSString*)guessContentType {
 	NSString *extension =  [self.url lastPathComponent];
@@ -968,15 +966,9 @@
     return (currentContentLength >= info.contentLength)?YES:NO;
 }
 
-- (BOOL)isDataLoaded
-{
-    return data != nil;
-}
-
 
 - (void) dealloc {
 	self.cache = nil;
-    [request release];
 	[info release];
 	[validUntil release];
 	[error release];
