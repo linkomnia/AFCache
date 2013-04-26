@@ -718,7 +718,6 @@ static NSMutableDictionary* AFCache_contextCache = nil;
 		item.justFetchHTTPHeader = justFetchHTTPHeader;
         item.isPackageArchive = (options & kAFCacheIsPackageArchive) != 0;
         item.URLInternallyRewritten = didRewriteURL;        
-        item.servedFromCache = performGETRequest ? NO : YES;
         item.info.request = aRequest;
         
         if (self.cacheWithHashname == NO)
@@ -750,7 +749,7 @@ static NSMutableDictionary* AFCache_contextCache = nil;
             // object found in cache.
             // now check if it is fresh enough to serve it from disk.			
             // pretend it's fresh when cache is offline
-			item.servedFromCache = YES;            
+			item.servedFromCache = YES;
             if ([self isOffline] && !revalidateCacheEntry) {
                 // return item and call delegate only if fully loaded
                 if (nil != item.data) {
@@ -811,7 +810,6 @@ static NSMutableDictionary* AFCache_contextCache = nil;
             {
                 // reset data, because there may be old data set already
                 item.data = nil;
-                
                 // save information that object was in cache and has to be revalidated
                 item.cacheStatus = kCacheStatusRevalidationPending;
                 NSMutableURLRequest *theRequest = nil;
@@ -1343,8 +1341,11 @@ static NSMutableDictionary* AFCache_contextCache = nil;
             [self removeCacheEntry:cacheableItem.info fileOnly:YES];
             cacheableItem = nil;
         }
-        
-        [cacheableItem validateCacheStatus];
+        if ([cacheableItem respondsToSelector:@selector(validateCacheStatus)])
+        {
+            [cacheableItem performSelector:@selector(validateCacheStatus)];
+        }
+
         if ([self isOffline]) {
             cacheableItem.cacheStatus = kCacheStatusFresh;            
         }
@@ -1696,8 +1697,6 @@ static NSMutableDictionary* AFCache_contextCache = nil;
 	// Remove the item from the queue, becaue we are going to download the item now
     [downloadQueue removeObject:item];
 	
-	
-    
     // check if we are downloading already
     if (nil != [pendingConnections objectForKey:item.url])
     {
@@ -1738,8 +1737,10 @@ static NSMutableDictionary* AFCache_contextCache = nil;
 {
     NSURLConnection *connection = [[[NSURLConnection alloc]
                                     initWithRequest:item.info.request
-                                    delegate:item 
+                                    delegate:item
                                     startImmediately:YES] autorelease];
+    [connection scheduleInRunLoop:[NSRunLoop currentRunLoop]
+                          forMode:NSRunLoopCommonModes];
     [pendingConnections setObject: connection forKey: item.url];
 }
 
