@@ -28,6 +28,7 @@
 #import "AFRegexString.h"
 #import "AFCache_Logging.h"
 #include <sys/xattr.h>
+#import "AFCacheableItem+PrivateAPI.h"
 
 @implementation AFCacheableItem
 
@@ -95,6 +96,7 @@
         {
             NSLog(@"Error: Could not map file %@", filePath);
         }
+        
         canMapData = (data != nil);
     }
 	
@@ -144,7 +146,6 @@
 	}
 	self.info.statusCode = statusCode;
     
-	// The resource has not been modified, so we call connectionDidFinishLoading and exit here.
 	if (self.cacheStatus==kCacheStatusRevalidationPending) {
 		switch (statusCode) {
 			case 304:
@@ -587,16 +588,18 @@
     // make sure we survive being released in the following call
     [[self retain] autorelease];
     
-  
     
     // Call delegate for this item
-    if (self.isPackageArchive) {
+    if (self.isPackageArchive)
+    {
         if (self.info.packageArchiveStatus == kAFCachePackageArchiveStatusUnknown)
         {
             self.info.packageArchiveStatus = kAFCachePackageArchiveStatusLoaded;
         }
         [cache performSelector:@selector(packageArchiveDidFinishLoading:) withObject:self];
-    } else {
+    }
+    else
+    {
         [self.cache removeItemsForURL:self.url];
         [self performSelector:@selector(signalItemsDidFinish:) withObject:items afterDelay:0.0];
     }
@@ -690,7 +693,6 @@
         } else {
             [self signalItemsDidFinish:items];
         }
-        
     }
     else
     {
@@ -910,10 +912,6 @@
     return realContentLength;
 }
 
-- (NSString *)asString {
-	if (self.data == nil) return nil;
-	return [[[NSString alloc] initWithData: self.data encoding: NSUTF8StringEncoding] autorelease];
-}
 
 - (NSString*)description {
 	NSMutableString *s = [NSMutableString stringWithString:@"URL: "];

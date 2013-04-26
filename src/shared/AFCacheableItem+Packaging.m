@@ -9,6 +9,7 @@
 #import "AFCacheableItem+Packaging.h"
 #import "DateParser.h"
 #import "AFCache+PrivateAPI.h"
+#import "AFCacheableItem+PrivateAPI.h"
 
 @implementation AFCacheableItem (Packaging)
 
@@ -43,8 +44,7 @@
 	NSMutableString *metaDescription = [NSMutableString stringWithFormat:@"{\"url\": \"%@\",\n\"file\": \"%@\",\n\"last-modified\": \"%@\"",
 	 self.url,
 	 filename,
-	 [dateParser formatHTTPDate:self.info.lastModified],
-	 [dateParser formatHTTPDate:self.validUntil]];
+	 [dateParser formatHTTPDate:self.info.lastModified]];
 	if (self.validUntil) {
 		[metaDescription appendFormat:@",\n\"expires\": \"%@\"", validUntil];
 	}

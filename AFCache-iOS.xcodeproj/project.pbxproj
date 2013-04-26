@@ -82,6 +82,7 @@
 		0569DECC1328AD9C00B3D016 /* DateParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 0569DE931328AD9C00B3D016 /* DateParser.m */; };
 		058339CD150CB747005A6D55 /* AFHTTPURLProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = 058339CB150CB747005A6D55 /* AFHTTPURLProtocol.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		058339CE150CB747005A6D55 /* AFHTTPURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 058339CC150CB747005A6D55 /* AFHTTPURLProtocol.m */; };
+		DAEF2DD01726C051009A258F /* AFCacheableItem+PrivateAPI.h in Headers */ = {isa = PBXBuildFile; fileRef = DAEF2DCF1726C050009A258F /* AFCacheableItem+PrivateAPI.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -169,6 +170,7 @@
 		0569DE931328AD9C00B3D016 /* DateParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DateParser.m; sourceTree = "<group>"; };
 		058339CB150CB747005A6D55 /* AFHTTPURLProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPURLProtocol.h; sourceTree = "<group>"; };
 		058339CC150CB747005A6D55 /* AFHTTPURLProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPURLProtocol.m; sourceTree = "<group>"; };
+		DAEF2DCF1726C050009A258F /* AFCacheableItem+PrivateAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AFCacheableItem+PrivateAPI.h"; sourceTree = "<group>"; };
 		DAFF0B5C165803C900A56ECE /* libAFCache-iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libAFCache-iOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -388,6 +390,7 @@
 				0569DE931328AD9C00B3D016 /* DateParser.m */,
 				058339CB150CB747005A6D55 /* AFHTTPURLProtocol.h */,
 				058339CC150CB747005A6D55 /* AFHTTPURLProtocol.m */,
+				DAEF2DCF1726C050009A258F /* AFCacheableItem+PrivateAPI.h */,
 			);
 			path = shared;
 			sourceTree = "<group>";
@@ -420,6 +423,7 @@
 				0569DECA1328AD9C00B3D016 /* DateParser.h in Headers */,
 				058339CD150CB747005A6D55 /* AFHTTPURLProtocol.h in Headers */,
 				0544C870150F57980057EC39 /* AFMediaTypeParser.h in Headers */,
+				DAEF2DD01726C051009A258F /* AFCacheableItem+PrivateAPI.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -95,80 +95,25 @@ typedef void (^AFCacheableItemBlock)(AFCacheableItem* item);
 #endif
 }
 
-@property (nonatomic, retain) NSURL *url;
-@property (nonatomic, retain) NSData *data;
-@property (nonatomic, retain) AFCache *cache;
-@property (nonatomic, assign) id <AFCacheableItemDelegate> delegate;
-@property (nonatomic, retain) NSError *error;
-@property (nonatomic, retain) NSDate *validUntil;
-@property (nonatomic, assign) BOOL persistable;
-@property (nonatomic, assign) BOOL ignoreErrors;
-@property (nonatomic, assign) BOOL justFetchHTTPHeader;
-@property (nonatomic, assign) SEL connectionDidFinishSelector;
-@property (nonatomic, assign) SEL connectionDidFailSelector;
-@property (nonatomic, assign) int cacheStatus;
-@property (nonatomic, retain) AFCacheableItemInfo *info;
+@property (nonatomic, readonly) NSURL *url;
+@property (nonatomic, readonly) NSData *data;
+@property (nonatomic, readonly) NSError *error;
+@property (nonatomic, readonly) NSDate *validUntil;
+
+@property (nonatomic, readonly) AFCacheableItemInfo *info;
 @property (nonatomic, retain) NSDictionary* userData;
-@property (nonatomic, assign) BOOL isPackageArchive;
-@property (nonatomic, assign) uint64_t currentContentLength;
+
+
 @property (nonatomic, retain) NSString *username;
 @property (nonatomic, retain) NSString *password;
 
-@property (nonatomic, retain) NSFileHandle* fileHandle;
-//@property (readonly) NSString* filePath;
-
-@property (nonatomic, assign) BOOL isRevalidating;
-@property (nonatomic, readonly) BOOL canMapData;
-
-
-#if NS_BLOCKS_AVAILABLE
-@property (nonatomic, copy) AFCacheableItemBlock completionBlock;
-@property (nonatomic, copy) AFCacheableItemBlock failBlock;
-@property (nonatomic, copy) AFCacheableItemBlock progressBlock;
-#endif
-
-@property (nonatomic, retain) NSURLRequest *IMSRequest;
-@property (nonatomic, assign) BOOL servedFromCache;
-@property (nonatomic, assign) BOOL URLInternallyRewritten;
-
-- (void)connection: (NSURLConnection *) connection didReceiveData: (NSData *) data;
-- (void)connectionDidFinishLoading: (NSURLConnection *) connection;
-- (void)connection: (NSURLConnection *) connection didReceiveResponse: (NSURLResponse *) response;
-- (void)connection: (NSURLConnection *) connection didFailWithError: (NSError *) error;
-- (void)connection:(NSURLConnection *)connection didCancelAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge;
-- (void)handleResponse:(NSURLResponse *)response;
-- (BOOL)isFresh;
-- (BOOL)isCachedOnDisk;
-- (NSString*)guessContentType;
-- (void)validateCacheStatus;
-- (uint64_t)currentContentLength;
-- (BOOL)isComplete;
-- (BOOL)isDataLoaded;
-
-- (NSString *)asString;
-- (NSString*)mimeType __attribute__((deprecated)); // mimeType moved to AFCacheableItemInfo. 
-// This method is implicitly guessing the mimetype which might be confusing because there's a property mimeType in AFCacheableItemInfo.
-
-#ifdef USE_TOUCHXML
-- (CXMLDocument *)asXMLDocument;
-#endif
-
-@end
-
-@protocol AFCacheableItemDelegate < NSObject >
-
-
-@optional
-- (void) connectionDidFail: (AFCacheableItem *) cacheableItem;
-- (void) connectionDidFinish: (AFCacheableItem *) cacheableItem;
-- (void) connectionHasBeenRedirected: (AFCacheableItem *) cacheableItem;
-
-- (void) packageArchiveDidReceiveData: (AFCacheableItem *) cacheableItem;
-- (void) packageArchiveDidFinishLoading: (AFCacheableItem *) cacheableItem;
-- (void) packageArchiveDidFinishExtracting: (AFCacheableItem *) cacheableItem;
-- (void) packageArchiveDidFailExtracting: (AFCacheableItem *) cacheableItem;
-- (void) packageArchiveDidFailLoading: (AFCacheableItem *) cacheableItem;
-
-- (void) cacheableItemDidReceiveData: (AFCacheableItem *) cacheableItem;
+@property (nonatomic, readonly) uint64_t currentContentLength;
+@property (nonatomic, readonly) int cacheStatus;
+@property (nonatomic, readonly) BOOL isCachedOnDisk;
+@property (nonatomic, readonly) BOOL isFresh;
+@property (nonatomic, readonly) BOOL isComplete;
+@property (nonatomic, readonly) BOOL isDataLoaded;
+@property (nonatomic, readonly) BOOL isPackageArchive;
+@property (nonatomic, readonly) BOOL servedFromCache;
 
 @end
