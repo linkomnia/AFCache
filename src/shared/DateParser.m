@@ -31,6 +31,12 @@
 
 #import "DateParser.h"
 
+static NSDateFormatter *kGH_rfc1123DateFormatter = nil;
+static NSDateFormatter *Kgh_iso8601DateFormatter = nil;
+static NSDateFormatter *kGH_rfc850DateFormatter = nil;
+static NSDateFormatter *kGH_ascTimeDateFormatter = nil;
+static NSDateFormatter *kGH_rfc822DateFormatter = nil;
+
 @implementation DateParser
 
 
@@ -115,12 +121,19 @@
 }
 
 + (NSDateFormatter *)gh_rfc822DateFormatter {
+    
+    if (kGH_rfc822DateFormatter)
+    {
+        return kGH_rfc822DateFormatter;
+    }
+    
     NSDateFormatter* dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
     [dateFormatter setFormatterBehavior: NSDateFormatterBehavior10_4];
     // Need to force US locale when generating otherwise it might not be 822 compatible
     [dateFormatter setLocale: [[[NSLocale alloc] initWithLocaleIdentifier: @"en_US"] autorelease]];
     [dateFormatter setTimeZone: [NSTimeZone timeZoneForSecondsFromGMT: 0]];
     [dateFormatter setDateFormat: @"EEE, dd MMM yyyy HH:mm:ss ZZZ"];
+    kGH_rfc822DateFormatter = [dateFormatter retain];
     
     return dateFormatter;
 }
@@ -135,12 +148,19 @@
 }
 
 + (NSDateFormatter *)gh_iso8601DateFormatter {
+    
+    if (Kgh_iso8601DateFormatter)
+    {
+        return Kgh_iso8601DateFormatter;
+    }
+    
     NSDateFormatter* dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
     [dateFormatter setFormatterBehavior: NSDateFormatterBehavior10_4];
     // Need to force US locale when generating otherwise it might not be 8601 compatible
     [dateFormatter setLocale: [[[NSLocale alloc] initWithLocaleIdentifier: @"en_US"] autorelease]];
     [dateFormatter setTimeZone: [NSTimeZone timeZoneForSecondsFromGMT: 0]];
     [dateFormatter setDateFormat: @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"];
+    Kgh_iso8601DateFormatter = [dateFormatter retain];
     
     return dateFormatter;
 }
@@ -156,12 +176,19 @@
 }
 
 + (NSDateFormatter *)gh_rfc1123DateFormatter {
+    
+    if (kGH_rfc1123DateFormatter)
+    {
+        return kGH_rfc1123DateFormatter;
+    }
+    
     NSDateFormatter* dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
     [dateFormatter setFormatterBehavior: NSDateFormatterBehavior10_4];
     // Need to force US locale when generating otherwise it might not be 822 compatible
     [dateFormatter setLocale: [[[NSLocale alloc] initWithLocaleIdentifier: @"en_US"] autorelease]];
     [dateFormatter setTimeZone: [NSTimeZone timeZoneForSecondsFromGMT: 0]];
     [dateFormatter setDateFormat: @"EEE, dd MMM yyyy HH:mm:ss zzz"];
+    kGH_rfc1123DateFormatter = [dateFormatter retain];
     
     return dateFormatter;
 }
@@ -177,11 +204,18 @@
 }
 
 + (NSDateFormatter *)gh_rfc850DateFormatter {
+    
+    if (kGH_rfc850DateFormatter)
+    {
+        return kGH_rfc850DateFormatter;
+    }
+    
     NSDateFormatter* dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
     [dateFormatter setFormatterBehavior: NSDateFormatterBehavior10_4];
     [dateFormatter setLocale: [[[NSLocale alloc] initWithLocaleIdentifier: @"en_US"] autorelease]];
     [dateFormatter setTimeZone: [NSTimeZone timeZoneForSecondsFromGMT: 0]];
     [dateFormatter setDateFormat: @"EEEE, dd-MMM-yy HH:mm:ss zzz"];
+    kGH_rfc850DateFormatter = [dateFormatter retain];
     
     return dateFormatter;
 }
@@ -197,11 +231,16 @@
 }
 
 + (NSDateFormatter *)gh_ascTimeDateFormatter {
+    if (kGH_ascTimeDateFormatter)
+    {
+        return kGH_ascTimeDateFormatter;
+    }
     NSDateFormatter* dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
     [dateFormatter setFormatterBehavior: NSDateFormatterBehavior10_4];
     [dateFormatter setLocale: [[[NSLocale alloc] initWithLocaleIdentifier: @"en_US"] autorelease]];
     [dateFormatter setTimeZone: [NSTimeZone timeZoneForSecondsFromGMT: 0]];
     [dateFormatter setDateFormat: @"EEE MMM d HH:mm:ss yyyy"];
+    kGH_ascTimeDateFormatter = [dateFormatter retain];
     
     return dateFormatter;
 }
