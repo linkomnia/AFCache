@@ -86,10 +86,10 @@
 		DAC80397172E85CA007AB7D7 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = DAC80393172E85C9007AB7D7 /* Reachability.m */; };
 		DAC80398172E85CA007AB7D7 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = DAC80393172E85C9007AB7D7 /* Reachability.m */; };
 		DAC80399172E85CA007AB7D7 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = DAC80393172E85C9007AB7D7 /* Reachability.m */; };
-		DAC8039A172E85CA007AB7D7 /* RKReachabilityObserver.h in Headers */ = {isa = PBXBuildFile; fileRef = DAC80394172E85C9007AB7D7 /* RKReachabilityObserver.h */; };
-		DAC8039B172E85CA007AB7D7 /* RKReachabilityObserver.m in Sources */ = {isa = PBXBuildFile; fileRef = DAC80395172E85CA007AB7D7 /* RKReachabilityObserver.m */; };
-		DAC8039C172E85CA007AB7D7 /* RKReachabilityObserver.m in Sources */ = {isa = PBXBuildFile; fileRef = DAC80395172E85CA007AB7D7 /* RKReachabilityObserver.m */; };
-		DAC8039D172E85CA007AB7D7 /* RKReachabilityObserver.m in Sources */ = {isa = PBXBuildFile; fileRef = DAC80395172E85CA007AB7D7 /* RKReachabilityObserver.m */; };
+		DAC803AA172E8806007AB7D7 /* AFReachabilityObserver.h in Headers */ = {isa = PBXBuildFile; fileRef = DAC803A8172E8806007AB7D7 /* AFReachabilityObserver.h */; };
+		DAC803AB172E8806007AB7D7 /* AFReachabilityObserver.m in Sources */ = {isa = PBXBuildFile; fileRef = DAC803A9172E8806007AB7D7 /* AFReachabilityObserver.m */; };
+		DAC803AC172E8806007AB7D7 /* AFReachabilityObserver.m in Sources */ = {isa = PBXBuildFile; fileRef = DAC803A9172E8806007AB7D7 /* AFReachabilityObserver.m */; };
+		DAC803AD172E8806007AB7D7 /* AFReachabilityObserver.m in Sources */ = {isa = PBXBuildFile; fileRef = DAC803A9172E8806007AB7D7 /* AFReachabilityObserver.m */; };
 		DAEF2DD01726C051009A258F /* AFCacheableItem+PrivateAPI.h in Headers */ = {isa = PBXBuildFile; fileRef = DAEF2DCF1726C050009A258F /* AFCacheableItem+PrivateAPI.h */; };
 /* End PBXBuildFile section */
 
@@ -180,8 +180,8 @@
 		058339CC150CB747005A6D55 /* AFHTTPURLProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPURLProtocol.m; sourceTree = "<group>"; };
 		DAC80392172E85C9007AB7D7 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		DAC80393172E85C9007AB7D7 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
-		DAC80394172E85C9007AB7D7 /* RKReachabilityObserver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RKReachabilityObserver.h; sourceTree = "<group>"; };
-		DAC80395172E85CA007AB7D7 /* RKReachabilityObserver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RKReachabilityObserver.m; sourceTree = "<group>"; };
+		DAC803A8172E8806007AB7D7 /* AFReachabilityObserver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFReachabilityObserver.h; sourceTree = "<group>"; };
+		DAC803A9172E8806007AB7D7 /* AFReachabilityObserver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFReachabilityObserver.m; sourceTree = "<group>"; };
 		DAEF2DCF1726C050009A258F /* AFCacheableItem+PrivateAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AFCacheableItem+PrivateAPI.h"; sourceTree = "<group>"; };
 		DAFF0B5C165803C900A56ECE /* libAFCache-iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libAFCache-iOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -411,10 +411,10 @@
 		DAC80391172E85C9007AB7D7 /* Reachability */ = {
 			isa = PBXGroup;
 			children = (
+				DAC803A8172E8806007AB7D7 /* AFReachabilityObserver.h */,
+				DAC803A9172E8806007AB7D7 /* AFReachabilityObserver.m */,
 				DAC80392172E85C9007AB7D7 /* Reachability.h */,
 				DAC80393172E85C9007AB7D7 /* Reachability.m */,
-				DAC80394172E85C9007AB7D7 /* RKReachabilityObserver.h */,
-				DAC80395172E85CA007AB7D7 /* RKReachabilityObserver.m */,
 			);
 			path = Reachability;
 			sourceTree = "<group>";
@@ -449,7 +449,7 @@
 				0544C870150F57980057EC39 /* AFMediaTypeParser.h in Headers */,
 				DAEF2DD01726C051009A258F /* AFCacheableItem+PrivateAPI.h in Headers */,
 				DAC80396172E85CA007AB7D7 /* Reachability.h in Headers */,
-				DAC8039A172E85CA007AB7D7 /* RKReachabilityObserver.h in Headers */,
+				DAC803AA172E8806007AB7D7 /* AFReachabilityObserver.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -602,7 +602,7 @@
 				058339CE150CB747005A6D55 /* AFHTTPURLProtocol.m in Sources */,
 				0544C871150F57980057EC39 /* AFMediaTypeParser.m in Sources */,
 				DAC80397172E85CA007AB7D7 /* Reachability.m in Sources */,
-				DAC8039B172E85CA007AB7D7 /* RKReachabilityObserver.m in Sources */,
+				DAC803AB172E8806007AB7D7 /* AFReachabilityObserver.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -626,7 +626,7 @@
 				0569DEC81328AD9C00B3D016 /* AFURLCache.m in Sources */,
 				0569DECC1328AD9C00B3D016 /* DateParser.m in Sources */,
 				DAC80398172E85CA007AB7D7 /* Reachability.m in Sources */,
-				DAC8039C172E85CA007AB7D7 /* RKReachabilityObserver.m in Sources */,
+				DAC803AC172E8806007AB7D7 /* AFReachabilityObserver.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -640,7 +640,7 @@
 				0566AE411332D85600583E6A /* CacheableItemDemoController.m in Sources */,
 				0566AE431332D85600583E6A /* NSURLRequestDemoViewController.m in Sources */,
 				DAC80399172E85CA007AB7D7 /* Reachability.m in Sources */,
-				DAC8039D172E85CA007AB7D7 /* RKReachabilityObserver.m in Sources */,
+				DAC803AD172E8806007AB7D7 /* AFReachabilityObserver.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

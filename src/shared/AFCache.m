@@ -35,7 +35,7 @@
 #include <sys/xattr.h>
 #import "AFRegexString.h"
 #import "AFCache_Logging.h"
-#import "RKReachabilityObserver.h"
+#import "AFReachabilityObserver.h"
 
 #if TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
@@ -230,7 +230,7 @@ static NSMutableDictionary* AFCache_contextCache = nil;
 #endif
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(reachabilityStatusChanged:)
-                                                     name:RKReachabilityDidChangeNotification
+                                                     name:AFReachabilityDidChangeNotification
                                                    object:nil];
         // we always assume that we have connection at the beginning
         // we wait for reachabibilty changes from the observer
@@ -1818,7 +1818,7 @@ static NSMutableDictionary* AFCache_contextCache = nil;
 
 - (void)reachabilityStatusChanged:(NSNotification*)notif
 {
-    isConnectedToNetwork_ = [[RKReachabilityObserver reachabilityObserverForInternet]
+    isConnectedToNetwork_ = [[AFReachabilityObserver reachabilityObserverForInternet]
                              isNetworkReachable];
 }
 

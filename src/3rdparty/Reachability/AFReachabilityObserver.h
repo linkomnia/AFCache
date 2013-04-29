@@ -1,5 +1,5 @@
 //
-//  RKReachabilityObserver.h
+//  AFReachabilityObserver.h
 //  RestKit
 //
 //  Created by Blake Watters on 9/14/10.
@@ -28,38 +28,38 @@
 /**
  Posted when the network state has changed
  */
-extern NSString * const RKReachabilityDidChangeNotification;
+extern NSString * const AFReachabilityDidChangeNotification;
 
 /**
  User Info key for accessing the SCNetworkReachabilityFlags from a
- RKReachabilityDidChangeNotification
+ AFReachabilityDidChangeNotification
  */
-extern NSString * const RKReachabilityFlagsUserInfoKey;
+extern NSString * const AFReachabilityFlagsUserInfoKey;
 
 /**
  Posted when network state has been initially determined
  */
-extern NSString * const RKReachabilityWasDeterminedNotification;
+extern NSString * const AFReachabilityWasDeterminedNotification;
 
 typedef enum {
     /**
      Network reachability not yet known
      */
-    RKReachabilityIndeterminate,
+    AFReachabilityIndeterminate,
     /**
      Network is not reachable
      */
-    RKReachabilityNotReachable,
+    AFReachabilityNotReachable,
     /**
      Network is reachable via a WiFi connection
      */
-    RKReachabilityReachableViaWiFi,
+    AFReachabilityReachableViaWiFi,
     /**
      Network is reachable via a "wireless wide area network" (WWAN). i.e. GPRS,
      Edge, 3G, etc.
      */
-    RKReachabilityReachableViaWWAN
-} RKReachabilityNetworkStatus;
+    AFReachabilityReachableViaWWAN
+} AFReachabilityNetworkStatus;
 
 /**
  Provides a notification based interface for monitoring changes
@@ -68,13 +68,13 @@ typedef enum {
  When initialized, creates an SCReachabilityReg and schedules it for callback
  notifications on the main dispatch queue. As notifications are intercepted from
  SystemConfiguration, the observer will update its state and emit
- `[RKReachabilityDidChangeNotifications](RKReachabilityDidChangeNotification)`
+ `[AFReachabilityDidChangeNotifications](AFReachabilityDidChangeNotification)`
  to inform listeners about state changes.
 
  Portions of this software are derived from the Apple Reachability
  code sample: http://developer.apple.com/library/ios/#samplecode/Reachability/Listings/Classes_Reachability_m.html
  */
-@interface RKReachabilityObserver : NSObject {
+@interface AFReachabilityObserver : NSObject {
     SCNetworkReachabilityRef _reachabilityRef;
 }
 
@@ -83,7 +83,7 @@ typedef enum {
 ///-----------------------------------------------------------------------------
 
 /**
- Creates and returns a RKReachabilityObserver instance observing reachability
+ Creates and returns a AFReachabilityObserver instance observing reachability
  changes to the hostname or IP address referenced in a given string. The
  observer will monitor the ability to reach the specified remote host and emit
  notifications when its reachability status changes.
@@ -98,7 +98,7 @@ typedef enum {
  @return A reachability observer targeting the given hostname/IP address or nil
  if it could not be observed.
  */
-+ (RKReachabilityObserver *)reachabilityObserverForHost:(NSString *)hostNameOrIPAddress;
++ (AFReachabilityObserver *)reachabilityObserverForHost:(NSString *)hostNameOrIPAddress;
 
 /**
  Creates and returns a reachabilityObserverForInternet instance observing the
@@ -107,7 +107,7 @@ typedef enum {
  @return A reachability observer targeting INADDR_ANY or nil if it could not be
  observed.
  */
-+ (RKReachabilityObserver *)reachabilityObserverForInternet;
++ (AFReachabilityObserver *)reachabilityObserverForInternet;
 
 /**
  Creates and returns a reachabilityObserverForInternet instance observing the
@@ -117,30 +117,30 @@ typedef enum {
  @return A reachability observer targeting IN_LINKLOCALNETNUM or nil if it could
  not be observed.
  */
-+ (RKReachabilityObserver *)reachabilityObserverForLocalWifi;
++ (AFReachabilityObserver *)reachabilityObserverForLocalWifi;
 
 /**
- Creates and returns a RKReachabilityObserver instance observing reachability
+ Creates and returns a AFReachabilityObserver instance observing reachability
  changes to the sockaddr address provided.
 
  @param address A socket address to determine reachability for.
  @return A reachability observer targeting the given socket address or nil if it
  could not be observed.
  */
-+ (RKReachabilityObserver *)reachabilityObserverForAddress:(const struct sockaddr *)address;
++ (AFReachabilityObserver *)reachabilityObserverForAddress:(const struct sockaddr *)address;
 
 /**
- Creates and returns a RKReachabilityObserver instance observing reachability
+ Creates and returns a AFReachabilityObserver instance observing reachability
  changes to the IP address provided.
 
  @param internetAddress A 32-bit integer representation of an IP address
  @return A reachability observer targeting the given IP address or nil if it
  could not be observed.
  */
-+ (RKReachabilityObserver *)reachabilityObserverForInternetAddress:(in_addr_t)internetAddress;
++ (AFReachabilityObserver *)reachabilityObserverForInternetAddress:(in_addr_t)internetAddress;
 
 /**
- Returns a RKReachabilityObserver instance observing reachability changes to the
+ Returns a AFReachabilityObserver instance observing reachability changes to the
  hostname or IP address referenced in a given string. The observer will monitor
  the ability to reach the specified remote host and emit notifications when its
  reachability status changes.
@@ -158,7 +158,7 @@ typedef enum {
 - (id)initWithHost:(NSString *)hostNameOrIPAddress;
 
 /**
- Returns a RKReachabilityObserver instance observing reachability changes to the
+ Returns a AFReachabilityObserver instance observing reachability changes to the
  sockaddr address provided.
 
  @param address A socket address to determine reachability for.
@@ -185,7 +185,7 @@ typedef enum {
 /**
  Current state of determining reachability
 
- When initialized, RKReachabilityObserver instances are in an indeterminate
+ When initialized, AFReachabilityObserver instances are in an indeterminate
  state to indicate that reachability status has not been yet established. After
  the first callback is processed by the observer, the observer will answer YES
  for reachabilityDetermined and networkStatus will return a determinate
@@ -199,9 +199,9 @@ typedef enum {
  Current network status as determined by examining the state of the currently
  cached reachabilityFlags
 
- @return Status of the network as RKReachabilityNetworkStatus
+ @return Status of the network as AFReachabilityNetworkStatus
  */
-@property (nonatomic, readonly) RKReachabilityNetworkStatus networkStatus;
+@property (nonatomic, readonly) AFReachabilityNetworkStatus networkStatus;
 
 /**
  Current state of the local WiFi interface's reachability
@@ -209,9 +209,9 @@ typedef enum {
  When the local WiFi interface is being monitored, only three reachability
  states are possible:
 
- - RKReachabilityIndeterminate
- - RKReachabilityNotReachable
- - RKReachabilityReachableViaWiFi
+ - AFReachabilityIndeterminate
+ - AFReachabilityNotReachable
+ - AFReachabilityReachableViaWiFi
 
  If the device has connectivity through a WWAN connection only it will consider
  the network not reachable.
@@ -230,7 +230,7 @@ typedef enum {
  reachability status the flags are cached and made accessible via the
  reachabilityFlags method.
 
- Flags can also be directly obtained via [RKReachabilityObserver getFlags]
+ Flags can also be directly obtained via [AFReachabilityObserver getFlags]
 
  @see getFlags
  @return The most recently cached reachability flags reflecting current network
