@@ -618,6 +618,7 @@ local int unzlocal_GetCurrentFileInfoInternal (file,
             err=UNZ_BADZIPFILE;
         }
     }
+
     if (unzlocal_getShort(&s->z_filefunc, s->filestream,&file_info.version) != UNZ_OK)
         err=UNZ_ERRNO;
 
@@ -703,7 +704,6 @@ local int unzlocal_GetCurrentFileInfoInternal (file,
                 err=UNZ_ERRNO;
             }
         }
-            
         if ((file_info.size_file_extra>0) && (extraFieldBufferSize>0))
             if (ZREAD(s->z_filefunc, s->filestream,extraField,uSizeRead)!=uSizeRead)
                 err=UNZ_ERRNO;
@@ -992,14 +992,13 @@ local int unzlocal_CheckCurrentFileCoherencyHeader (s,piSizeVar,
     {
         if (unzlocal_getLong(&s->z_filefunc, s->filestream,&uMagic) != UNZ_OK)
         {
-           err=UNZ_ERRNO; 
+            err=UNZ_ERRNO;
         }
         else if (uMagic!=0x04034b50)
         {
             err=UNZ_BADZIPFILE;
         }
     }
-       
 
     if (unzlocal_getShort(&s->z_filefunc, s->filestream,&uData) != UNZ_OK)
         err=UNZ_ERRNO;

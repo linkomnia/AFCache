@@ -9,6 +9,8 @@
 #import "AFCacheableItem+Packaging.h"
 #import "DateParser.h"
 #import "AFCache+PrivateAPI.h"
+#import "AFCacheableItem.h"
+#import "AFCacheableItem+PrivateAPI.h"
 
 @implementation AFCacheableItem (Packaging)
 
@@ -19,12 +21,12 @@
 {
 	self = [super init];
 	self.info = [[[AFCacheableItemInfo alloc] init] autorelease];
-	info.lastModified = lastModified;
-	info.expireDate = expireDate;
-	info.mimeType = contentType;
-	self.url = URL;	
+	self.info.lastModified = lastModified;
+	self.info.expireDate = expireDate;
+	self.info.mimeType = contentType;
+	self.url = URL;
 	self.cacheStatus = kCacheStatusFresh;
-	self.validUntil = info.expireDate;
+	self.validUntil = self.info.expireDate;
 	self.cache = [AFCache sharedInstance];	
 	return self;
 }
@@ -45,7 +47,7 @@
 	 filename,
 	 [dateParser formatHTTPDate:self.info.lastModified]];
 	if (self.validUntil) {
-		[metaDescription appendFormat:@",\n\"expires\": \"%@\"", validUntil];
+		[metaDescription appendFormat:@",\n\"expires\": \"%@\"", self.validUntil];
 	}
 	[metaDescription appendFormat:@"\n}"];
 	[parser release];
@@ -81,7 +83,7 @@
 	[self.info setContentLength:[theData length]];
 	[self setDownloadStartedFileAttributes];
 	self.data = theData;
-	self.fileHandle = [cache createFileForItem:self];
+	self.fileHandle = [self.cache createFileForItem:self];
     [self.fileHandle seekToFileOffset:0];
     [self.fileHandle writeData:theData];
 	[self setDownloadFinishedFileAttributes];

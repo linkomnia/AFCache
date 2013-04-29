@@ -24,7 +24,7 @@
 #import <Foundation/NSPropertyList.h>
 #import "DateParser.h"
 #import "AFHTTPURLProtocol.h"
-
+#import "AFCacheableItem+PrivateAPI.h"
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -226,10 +226,8 @@ static NSMutableDictionary* AFCache_contextCache = nil;
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(resignActive)
                                                      name:UIApplicationWillTerminateNotification
-                                                   object:nil];
-
+                                                   object:nil];        
 #endif
-        
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(reachabilityStatusChanged:)
                                                      name:RKReachabilityDidChangeNotification
@@ -637,6 +635,7 @@ static NSMutableDictionary* AFCache_contextCache = nil;
         NSError *error = [NSError errorWithDomain:@"URL is not set" code:-1 userInfo:nil];
         AFCacheableItem *item = [[[AFCacheableItem alloc] init] autorelease];
         item.error = error;
+        
         [aDelegate performSelector:aFailSelector withObject:item];
 #if NS_BLOCKS_AVAILABLE
         AFCacheableItemBlock block = (AFCacheableItemBlock)aFailBlock;
@@ -692,7 +691,7 @@ static NSMutableDictionary* AFCache_contextCache = nil;
             }
 			            
             // check validity of cached item
-            if (![item isDataLoaded] &&
+            if ([item data] == nil &&
                 ([item hasDownloadFileAttribute] || ![item hasValidContentLength])) {
 
                 if (nil == [pendingConnections objectForKey:internalURL])
@@ -729,7 +728,6 @@ static NSMutableDictionary* AFCache_contextCache = nil;
 		item.justFetchHTTPHeader = justFetchHTTPHeader;
         item.isPackageArchive = (options & kAFCacheIsPackageArchive) != 0;
         item.URLInternallyRewritten = didRewriteURL;        
-        item.servedFromCache = performGETRequest ? NO : YES;
         item.info.request = aRequest;
         
         if (self.cacheWithHashname == NO)
@@ -761,7 +759,7 @@ static NSMutableDictionary* AFCache_contextCache = nil;
             // object found in cache.
             // now check if it is fresh enough to serve it from disk.			
             // pretend it's fresh when cache is offline
-			item.servedFromCache = YES;            
+			item.servedFromCache = YES;
             if ([self isOffline] && !revalidateCacheEntry) {
                 // return item and call delegate only if fully loaded
                 if (nil != item.data) {
@@ -822,7 +820,6 @@ static NSMutableDictionary* AFCache_contextCache = nil;
             {
                 // reset data, because there may be old data set already
                 item.data = nil;
-                
                 // save information that object was in cache and has to be revalidated
                 item.cacheStatus = kCacheStatusRevalidationPending;
                 NSMutableURLRequest *theRequest = nil;
@@ -1354,8 +1351,11 @@ static NSMutableDictionary* AFCache_contextCache = nil;
             [self removeCacheEntry:cacheableItem.info fileOnly:YES];
             cacheableItem = nil;
         }
-        
-        [cacheableItem validateCacheStatus];
+        if ([cacheableItem respondsToSelector:@selector(validateCacheStatus)])
+        {
+            [cacheableItem performSelector:@selector(validateCacheStatus)];
+        }
+
         if ([self isOffline]) {
             cacheableItem.cacheStatus = kCacheStatusFresh;            
         }
@@ -1707,8 +1707,6 @@ static NSMutableDictionary* AFCache_contextCache = nil;
 	// Remove the item from the queue, becaue we are going to download the item now
     [downloadQueue removeObject:item];
 	
-	
-    
     // check if we are downloading already
     if (nil != [pendingConnections objectForKey:item.url])
     {
@@ -1749,8 +1747,10 @@ static NSMutableDictionary* AFCache_contextCache = nil;
 {
     NSURLConnection *connection = [[[NSURLConnection alloc]
                                     initWithRequest:item.info.request
-                                    delegate:item 
+                                    delegate:item
                                     startImmediately:YES] autorelease];
+    [connection scheduleInRunLoop:[NSRunLoop currentRunLoop]
+                          forMode:NSRunLoopCommonModes];
     [pendingConnections setObject: connection forKey: item.url];
 }
 
@@ -1811,8 +1811,8 @@ static NSMutableDictionary* AFCache_contextCache = nil;
 - (void)setOffline:(BOOL)value {
 	_offline = value;
 }
+
 - (BOOL)isOffline {
-   
 	return ![self isConnectedToNetwork] || _offline==YES || !self.downloadPermission;
 }
 
@@ -1824,8 +1824,6 @@ static NSMutableDictionary* AFCache_contextCache = nil;
 
 /*
  * Returns whether we currently have a working connection
- * Note: This should be done asynchronously, i.e. use
- * SCNetworkReachabilityScheduleWithRunLoop and let it update our information.
  */
 - (BOOL)isConnectedToNetwork  {
     

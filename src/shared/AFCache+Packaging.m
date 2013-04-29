@@ -13,6 +13,7 @@
 #import "AFPackageInfo.h"
 #import "AFCache+Packaging.h"
 #import "AFCache_Logging.h"
+#import "AFCacheableItem+PrivateAPI.h"
 
 #define CACHED_OBJECTS [cacheInfoStore valueForKey:kAFCacheInfoStoreCachedObjectsKey]
 

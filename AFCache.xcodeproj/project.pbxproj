@@ -92,20 +92,6 @@
 		05FA238E1357544F00050BCB /* Constants.h in Headers */ = {isa = PBXBuildFile; fileRef = 05C9BAEE132A291B0087CEA1 /* Constants.h */; };
 		05FA238F1357545000050BCB /* DateParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 05C9BAEF132A291B0087CEA1 /* DateParser.h */; };
 		05FA23901357548D00050BCB /* libAFCacheOSXStatic.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 05FA235F1357539B00050BCB /* libAFCacheOSXStatic.a */; };
-		DAC80338172E4EE3007AB7D7 /* Reachability.h in Headers */ = {isa = PBXBuildFile; fileRef = DAC80334172E4EE3007AB7D7 /* Reachability.h */; };
-		DAC80339172E4EE3007AB7D7 /* Reachability.h in Headers */ = {isa = PBXBuildFile; fileRef = DAC80334172E4EE3007AB7D7 /* Reachability.h */; };
-		DAC8033A172E4EE3007AB7D7 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = DAC80335172E4EE3007AB7D7 /* Reachability.m */; };
-		DAC8033B172E4EE3007AB7D7 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = DAC80335172E4EE3007AB7D7 /* Reachability.m */; };
-		DAC8033C172E4EE3007AB7D7 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = DAC80335172E4EE3007AB7D7 /* Reachability.m */; };
-		DAC8033D172E4EE3007AB7D7 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = DAC80335172E4EE3007AB7D7 /* Reachability.m */; };
-		DAC8033E172E4EE3007AB7D7 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = DAC80335172E4EE3007AB7D7 /* Reachability.m */; };
-		DAC8033F172E4EE3007AB7D7 /* RKReachabilityObserver.h in Headers */ = {isa = PBXBuildFile; fileRef = DAC80336172E4EE3007AB7D7 /* RKReachabilityObserver.h */; };
-		DAC80340172E4EE3007AB7D7 /* RKReachabilityObserver.h in Headers */ = {isa = PBXBuildFile; fileRef = DAC80336172E4EE3007AB7D7 /* RKReachabilityObserver.h */; };
-		DAC80341172E4EE3007AB7D7 /* RKReachabilityObserver.m in Sources */ = {isa = PBXBuildFile; fileRef = DAC80337172E4EE3007AB7D7 /* RKReachabilityObserver.m */; };
-		DAC80342172E4EE3007AB7D7 /* RKReachabilityObserver.m in Sources */ = {isa = PBXBuildFile; fileRef = DAC80337172E4EE3007AB7D7 /* RKReachabilityObserver.m */; };
-		DAC80343172E4EE3007AB7D7 /* RKReachabilityObserver.m in Sources */ = {isa = PBXBuildFile; fileRef = DAC80337172E4EE3007AB7D7 /* RKReachabilityObserver.m */; };
-		DAC80344172E4EE3007AB7D7 /* RKReachabilityObserver.m in Sources */ = {isa = PBXBuildFile; fileRef = DAC80337172E4EE3007AB7D7 /* RKReachabilityObserver.m */; };
-		DAC80345172E4EE3007AB7D7 /* RKReachabilityObserver.m in Sources */ = {isa = PBXBuildFile; fileRef = DAC80337172E4EE3007AB7D7 /* RKReachabilityObserver.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -218,10 +204,6 @@
 		05FA23751357539C00050BCB /* AFCacheOSXStaticTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AFCacheOSXStaticTests.h; sourceTree = "<group>"; };
 		05FA23771357539C00050BCB /* AFCacheOSXStaticTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AFCacheOSXStaticTests.m; sourceTree = "<group>"; };
 		05FA237F135753C500050BCB /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
-		DAC80334172E4EE3007AB7D7 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
-		DAC80335172E4EE3007AB7D7 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
-		DAC80336172E4EE3007AB7D7 /* RKReachabilityObserver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RKReachabilityObserver.h; sourceTree = "<group>"; };
-		DAC80337172E4EE3007AB7D7 /* RKReachabilityObserver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RKReachabilityObserver.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -453,7 +435,6 @@
 		05C9BB06132A29370087CEA1 /* 3rdparty */ = {
 			isa = PBXGroup;
 			children = (
-				DAC80333172E4EE3007AB7D7 /* Reachability */,
 				05C9BB07132A29370087CEA1 /* AFRegexString */,
 				05C9BB0A132A29370087CEA1 /* minizip */,
 				05C9BB16132A29370087CEA1 /* ZipArchive.h */,
@@ -534,17 +515,6 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		DAC80333172E4EE3007AB7D7 /* Reachability */ = {
-			isa = PBXGroup;
-			children = (
-				DAC80334172E4EE3007AB7D7 /* Reachability.h */,
-				DAC80335172E4EE3007AB7D7 /* Reachability.m */,
-				DAC80336172E4EE3007AB7D7 /* RKReachabilityObserver.h */,
-				DAC80337172E4EE3007AB7D7 /* RKReachabilityObserver.m */,
-			);
-			path = Reachability;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -564,8 +534,6 @@
 				046BEFB3152D180A00FE16B8 /* AFCacheableItem+Packaging.h in Headers */,
 				046BEFB4152D180A00FE16B8 /* AFPackageInfo.h in Headers */,
 				04007352153242D400335735 /* AFCache+Mimetypes.h in Headers */,
-				DAC80338172E4EE3007AB7D7 /* Reachability.h in Headers */,
-				DAC8033F172E4EE3007AB7D7 /* RKReachabilityObserver.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -592,8 +560,6 @@
 				05FA23851357543D00050BCB /* AFCache.h in Headers */,
 				05C49201150F9D5C009EDA8F /* AFMediaTypeParser.h in Headers */,
 				05FA23861357543F00050BCB /* AFCache+Mimetypes.h in Headers */,
-				DAC80339172E4EE3007AB7D7 /* Reachability.h in Headers */,
-				DAC80340172E4EE3007AB7D7 /* RKReachabilityObserver.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -838,8 +804,6 @@
 				05C491FB150F9CB1009EDA8F /* AFMediaTypeParser.m in Sources */,
 				05C491FF150F9CBA009EDA8F /* AFHTTPURLProtocol.m in Sources */,
 				05238D0F151B6D880015D70E /* AFCachePackageCreator.m in Sources */,
-				DAC8033A172E4EE3007AB7D7 /* Reachability.m in Sources */,
-				DAC80341172E4EE3007AB7D7 /* RKReachabilityObserver.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -848,8 +812,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				0511C97815AC480500369FE4 /* AFCacheTests.m in Sources */,
-				DAC8033B172E4EE3007AB7D7 /* Reachability.m in Sources */,
-				DAC80342172E4EE3007AB7D7 /* RKReachabilityObserver.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -858,8 +820,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				05FA234A135751E100050BCB /* afcpkg_main.m in Sources */,
-				DAC8033C172E4EE3007AB7D7 /* Reachability.m in Sources */,
-				DAC80343172E4EE3007AB7D7 /* RKReachabilityObserver.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -884,8 +844,6 @@
 				055AAF6113575581006E1CF9 /* AFURLCache.m in Sources */,
 				05C49202150F9D67009EDA8F /* AFMediaTypeParser.m in Sources */,
 				055AAF6213575581006E1CF9 /* DateParser.m in Sources */,
-				DAC8033D172E4EE3007AB7D7 /* Reachability.m in Sources */,
-				DAC80344172E4EE3007AB7D7 /* RKReachabilityObserver.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -894,8 +852,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				05FA23781357539C00050BCB /* AFCacheOSXStaticTests.m in Sources */,
-				DAC8033E172E4EE3007AB7D7 /* Reachability.m in Sources */,
-				DAC80345172E4EE3007AB7D7 /* RKReachabilityObserver.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
