@@ -74,6 +74,5 @@ typedef enum {
 @property (nonatomic, retain) NSString *filename;
 @property (nonatomic, assign) AFCachePackageArchiveStatus packageArchiveStatus;
 
-
 @end
 

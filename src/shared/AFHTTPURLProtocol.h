@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 #import "AFCache.h"
-#import "AFCacheableItem+PrivateAPI.h"
 
 @interface AFHTTPURLProtocol : NSURLProtocol <AFCacheableItemDelegate> {
     NSURLRequest *m_request;

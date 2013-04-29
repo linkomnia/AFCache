@@ -24,7 +24,7 @@
 #import <Foundation/NSPropertyList.h>
 #import "DateParser.h"
 #import "AFHTTPURLProtocol.h"
-#import "AFCacheableItem+PrivateAPI.h"
+
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -35,6 +35,7 @@
 #include <sys/xattr.h>
 #import "AFRegexString.h"
 #import "AFCache_Logging.h"
+#import "RKReachabilityObserver.h"
 
 #if TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
@@ -225,8 +226,18 @@ static NSMutableDictionary* AFCache_contextCache = nil;
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(resignActive)
                                                      name:UIApplicationWillTerminateNotification
-                                                   object:nil];        
+                                                   object:nil];
+
 #endif
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(reachabilityStatusChanged:)
+                                                     name:RKReachabilityDidChangeNotification
+                                                   object:nil];
+        // we always assume that we have connection at the beginning
+        // we wait for reachabibilty changes from the observer
+        isConnectedToNetwork_ = YES;
+        
         if (nil == AFCache_contextCache)
         {
             AFCache_contextCache = [[NSMutableDictionary alloc] init];
@@ -626,7 +637,6 @@ static NSMutableDictionary* AFCache_contextCache = nil;
         NSError *error = [NSError errorWithDomain:@"URL is not set" code:-1 userInfo:nil];
         AFCacheableItem *item = [[[AFCacheableItem alloc] init] autorelease];
         item.error = error;
-        
         [aDelegate performSelector:aFailSelector withObject:item];
 #if NS_BLOCKS_AVAILABLE
         AFCacheableItemBlock block = (AFCacheableItemBlock)aFailBlock;
@@ -682,7 +692,7 @@ static NSMutableDictionary* AFCache_contextCache = nil;
             }
 			            
             // check validity of cached item
-            if ([item data] == nil &&
+            if (![item isDataLoaded] &&
                 ([item hasDownloadFileAttribute] || ![item hasValidContentLength])) {
 
                 if (nil == [pendingConnections objectForKey:internalURL])
@@ -719,6 +729,7 @@ static NSMutableDictionary* AFCache_contextCache = nil;
 		item.justFetchHTTPHeader = justFetchHTTPHeader;
         item.isPackageArchive = (options & kAFCacheIsPackageArchive) != 0;
         item.URLInternallyRewritten = didRewriteURL;        
+        item.servedFromCache = performGETRequest ? NO : YES;
         item.info.request = aRequest;
         
         if (self.cacheWithHashname == NO)
@@ -750,7 +761,7 @@ static NSMutableDictionary* AFCache_contextCache = nil;
             // object found in cache.
             // now check if it is fresh enough to serve it from disk.			
             // pretend it's fresh when cache is offline
-			item.servedFromCache = YES;
+			item.servedFromCache = YES;            
             if ([self isOffline] && !revalidateCacheEntry) {
                 // return item and call delegate only if fully loaded
                 if (nil != item.data) {
@@ -811,6 +822,7 @@ static NSMutableDictionary* AFCache_contextCache = nil;
             {
                 // reset data, because there may be old data set already
                 item.data = nil;
+                
                 // save information that object was in cache and has to be revalidated
                 item.cacheStatus = kCacheStatusRevalidationPending;
                 NSMutableURLRequest *theRequest = nil;
@@ -1342,11 +1354,8 @@ static NSMutableDictionary* AFCache_contextCache = nil;
             [self removeCacheEntry:cacheableItem.info fileOnly:YES];
             cacheableItem = nil;
         }
-        if ([cacheableItem respondsToSelector:@selector(validateCacheStatus)])
-        {
-            [cacheableItem performSelector:@selector(validateCacheStatus)];
-        }
-
+        
+        [cacheableItem validateCacheStatus];
         if ([self isOffline]) {
             cacheableItem.cacheStatus = kCacheStatusFresh;            
         }
@@ -1698,6 +1707,8 @@ static NSMutableDictionary* AFCache_contextCache = nil;
 	// Remove the item from the queue, becaue we are going to download the item now
     [downloadQueue removeObject:item];
 	
+	
+    
     // check if we are downloading already
     if (nil != [pendingConnections objectForKey:item.url])
     {
@@ -1738,10 +1749,8 @@ static NSMutableDictionary* AFCache_contextCache = nil;
 {
     NSURLConnection *connection = [[[NSURLConnection alloc]
                                     initWithRequest:item.info.request
-                                    delegate:item
+                                    delegate:item 
                                     startImmediately:YES] autorelease];
-    [connection scheduleInRunLoop:[NSRunLoop currentRunLoop]
-                          forMode:NSRunLoopCommonModes];
     [pendingConnections setObject: connection forKey: item.url];
 }
 
@@ -1802,9 +1811,15 @@ static NSMutableDictionary* AFCache_contextCache = nil;
 - (void)setOffline:(BOOL)value {
 	_offline = value;
 }
-
 - (BOOL)isOffline {
+   
 	return ![self isConnectedToNetwork] || _offline==YES || !self.downloadPermission;
+}
+
+- (void)reachabilityStatusChanged:(NSNotification*)notif
+{
+    isConnectedToNetwork_ = [[RKReachabilityObserver reachabilityObserverForInternet]
+                             isNetworkReachable];
 }
 
 /*
@@ -1813,27 +1828,8 @@ static NSMutableDictionary* AFCache_contextCache = nil;
  * SCNetworkReachabilityScheduleWithRunLoop and let it update our information.
  */
 - (BOOL)isConnectedToNetwork  {
-	// Create zero address
-	struct sockaddr_in zeroAddress;
-	bzero( &zeroAddress, sizeof(zeroAddress) );
-	zeroAddress.sin_len = sizeof(zeroAddress);
-	zeroAddress.sin_family = AF_INET;
-	
-	// Recover reachability flags
-	SCNetworkReachabilityRef defaultRouteReachability = SCNetworkReachabilityCreateWithAddress(NULL, (struct sockaddr *)&zeroAddress);
-	SCNetworkReachabilityFlags flags;
-	BOOL didRetrieveFlags = SCNetworkReachabilityGetFlags(defaultRouteReachability, &flags);
-	CFRelease(defaultRouteReachability);
-	if (!didRetrieveFlags) {
-		//NSLog(@"Error. Could not recover network reachability flags\n");
-		return 0;
-	}
-	BOOL isReachable = flags & kSCNetworkFlagsReachable;
-	BOOL needsConnection = flags & kSCNetworkFlagsConnectionRequired;
     
-	BOOL connected = (isReachable && !needsConnection) ? YES : NO;
-    
-    return connected;
+    return isConnectedToNetwork_;
 }
 
 - (void)setConnectedToNetwork:(BOOL)connected

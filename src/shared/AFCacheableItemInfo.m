@@ -54,22 +54,16 @@
 }
 
 - (void)encodeWithCoder: (NSCoder *) coder {
-	[coder encodeObject: [NSNumber numberWithDouble: requestTimestamp]
-                 forKey: @"requestTimestamp"];
-	[coder encodeObject: [NSNumber numberWithDouble: responseTimestamp]
-                 forKey: @"responseTimestamp"];
+	[coder encodeObject: [NSNumber numberWithDouble: requestTimestamp] forKey: @"requestTimestamp"];
+	[coder encodeObject: [NSNumber numberWithDouble: responseTimestamp] forKey: @"responseTimestamp"];
 	[coder encodeObject: serverDate forKey: @"serverDate"];
 	[coder encodeObject: lastModified forKey: @"lastModified"];
 	[coder encodeObject: [NSNumber numberWithDouble: age] forKey: @"age"];
 	[coder encodeObject: maxAge forKey: @"maxAge"];
 	[coder encodeObject: expireDate forKey: @"expireDate"];
 	[coder encodeObject: eTag forKey: @"eTag"];
-	[coder encodeObject: [NSNumber numberWithUnsignedInteger:statusCode]
-                 forKey: @"statusCode"];
-    [coder encodeObject: [NSNumber numberWithUnsignedInteger:packageArchiveStatus]
-                 forKey: @"packageArchiveStatus"];
-	[coder encodeObject: [NSNumber numberWithUnsignedLongLong:contentLength]
-                 forKey: @"contentLength"];
+	[coder encodeObject: [NSNumber numberWithUnsignedInteger:statusCode] forKey: @"statusCode"];
+	[coder encodeObject: [NSNumber numberWithUnsignedLongLong:contentLength] forKey: @"contentLength"];
 	[coder encodeObject: mimeType forKey: @"mimeType"];
 	[coder encodeObject: responseURL forKey: @"responseURL"];
 	[coder encodeObject: m_request forKey: @"request"];
@@ -90,7 +84,6 @@
 	self.expireDate = [coder decodeObjectForKey: @"expireDate"];
 	self.eTag = [coder decodeObjectForKey: @"eTag"];
 	self.statusCode = [[coder decodeObjectForKey: @"statusCode"] intValue];
-    self.packageArchiveStatus = [[coder decodeObjectForKey: @"packageArchiveStatus"] intValue];
 	self.contentLength = [[coder decodeObjectForKey: @"contentLength"] unsignedIntValue];
 	self.mimeType = [coder decodeObjectForKey: @"mimeType"];
 	self.responseURL = [coder decodeObjectForKey: @"responseURL"];
@@ -116,7 +109,7 @@
 	[s appendFormat:@"expireDate: %@\n", [expireDate description]];
 	[s appendFormat:@"eTag: %@\n", eTag];
 	[s appendFormat:@"statusCode: %d\n", statusCode];
-	[s appendFormat:@"contentLength: %lld\n", contentLength];
+	[s appendFormat:@"contentLength: %llu\n", contentLength];
 	[s appendFormat:@"mimeType: %@\n", mimeType];
     [s appendFormat:@"request: %@\n", m_request];
     [s appendFormat:@"response: %@\n", m_response];

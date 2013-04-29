@@ -24,8 +24,6 @@
 #import "AFCache+Packaging.h"
 #import "DateParser.h"
 #import "AFMediaTypeParser.h"
-#import "AFCacheableItem+PrivateAPI.h"
-
 
 @implementation AFURLCache
 

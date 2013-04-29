@@ -29,7 +29,6 @@
  */
  
 #import "AFHTTPURLProtocol.h"
-#import "AFCacheableItem+PrivateAPI.h"
 
 @implementation AFHTTPURLProtocol
 

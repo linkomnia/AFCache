@@ -21,8 +21,9 @@
 #ifdef USE_TOUCHXML
 #import "TouchXML.h"
 #endif
-#import "AFURLCache.h"
 #import "AFCacheableItem.h"
+#import "AFURLCache.h"
+
 #import <Foundation/NSObjCRuntime.h>
 
 #define kAFCacheExpireInfoDictionaryFilename @"kAFCacheExpireInfoDictionary"
@@ -63,7 +64,6 @@
 extern const char* kAFCacheContentLengthFileAttribute;
 extern const char* kAFCacheDownloadingFileAttribute;
 extern const double kAFCacheInfiniteFileSize;
-
 
 
 /*

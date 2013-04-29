@@ -75,6 +75,23 @@
 
 @end
 
+@interface AFCacheableItem (PrivateAPI)
+
+@property (nonatomic, assign) int tag;
+
+- (void)setDownloadStartedFileAttributes;
+- (void)setDownloadFinishedFileAttributes;
+- (BOOL)isDownloading;
+- (BOOL)hasDownloadFileAttribute;
+- (BOOL)hasValidContentLength;
+- (uint64_t)getContentLengthFromFile;
+- (void)appendData:(NSData*)newData;
+- (void)signalItems:(NSArray*)items usingSelector:(SEL)selector;
+- (void)signalItems:(NSArray*)items usingSelector:(SEL)selector usingBlock:(void (^)(void))block;
+- (void)signalItemsDidFinish:(NSArray*)items;
+- (void)signalItemsDidFail:(NSArray*)items;
+
+@end
 
 @interface AFCacheableItemInfo (PrivateAPI)
 

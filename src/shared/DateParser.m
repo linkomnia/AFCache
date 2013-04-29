@@ -148,7 +148,7 @@ static NSDateFormatter *kGH_rfc822DateFormatter = nil;
 }
 
 + (NSDateFormatter *)gh_iso8601DateFormatter {
-    
+
     if (Kgh_iso8601DateFormatter)
     {
         return Kgh_iso8601DateFormatter;
