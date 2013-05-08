@@ -45,10 +45,10 @@ NSString * const AFReachabilityWasDeterminedNotification = @"AFReachabilityWasDe
 
 static void ReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkReachabilityFlags flags, void *info) {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-
+    
     AFReachabilityObserver *observer = (AFReachabilityObserver *)info;
     observer.reachabilityFlags = flags;
-
+    
     [pool release];
 }
 
@@ -106,24 +106,24 @@ static void ReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkReach
             //    http://www.opensource.apple.com/source/bootp/bootp-89/IPConfiguration.bproj/linklocal.c
             //
             _monitoringLocalWiFi = address->sa_len == sizeof(struct sockaddr_in) && address->sa_family == AF_INET && IN_LINKLOCAL(ntohl(((const struct sockaddr_in *)address)->sin_addr.s_addr));
-
+            
             // Save the IP address
             char str[INET_ADDRSTRLEN];
             inet_ntop(AF_INET, &((const struct sockaddr_in *)address)->sin_addr, str, INET_ADDRSTRLEN);
             _host = [[NSString alloc] initWithCString:str encoding:NSUTF8StringEncoding];
-
+            
             if (_monitoringLocalWiFi) {
                 NSLog(@"Reachability observer initialized for Local Wifi");
             } else if (address->sa_len == sizeof(struct sockaddr_in) && address->sa_family == AF_INET) {
                 NSLog(@"Reachability observer initialized with IP address: %@.", _host);
             }
-
+            
             // We can immediately determine reachability to an IP address
             dispatch_async(dispatch_get_main_queue(), ^{
                 // Obtain the flags after giving other objects a chance to observe us
                 [self getFlags];
             });
-
+            
             // Schedule the observer
             [self scheduleObserver];
         }
@@ -140,15 +140,15 @@ static void ReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkReach
     if (result != 0) {
         // IP Address
         struct sockaddr_in remote_saddr;
-
+        
         bzero(&remote_saddr, sizeof(struct sockaddr_in));
         remote_saddr.sin_len = sizeof(struct sockaddr_in);
         remote_saddr.sin_family = AF_INET;
         inet_aton(hostNameOrIPAddressCString, &(remote_saddr.sin_addr));
-
+        
         return [self initWithAddress:(struct sockaddr *)&remote_saddr];
     }
-
+    
     // Hostname
     self = [self init];
     if (self) {
@@ -163,21 +163,20 @@ static void ReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkReach
             [self scheduleObserver];
         }
     }
-
+    
     return self;
 }
 
 - (void)dealloc
 {
-    NSLog(@"Deallocating reachability observer %@", self);
-
+    
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self unscheduleObserver];
     if (_reachabilityRef) {
         CFRelease(_reachabilityRef);
     }
     [_host release];
-
+    
     [super dealloc];
 }
 
@@ -195,35 +194,35 @@ static void ReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkReach
         case AFReachabilityIndeterminate:
             return @"AFReachabilityIndeterminate";
             break;
-
+            
         case AFReachabilityNotReachable:
             return @"AFReachabilityNotReachable";
             break;
-
+            
         case AFReachabilityReachableViaWiFi:
             return @"AFReachabilityReachableViaWiFi";
             break;
-
+            
         case AFReachabilityReachableViaWWAN:
             return @"AFReachabilityReachableViaWWAN";
             break;
-
+            
         default:
             break;
     }
-
+    
     return nil;
 }
 
 - (NSString *)reachabilityFlagsDescription
 {
     return [NSString stringWithFormat:@"%c%c %c%c%c%c%c%c%c",
-            #if TARGET_OS_IPHONE
+#if TARGET_OS_IPHONE
             (_reachabilityFlags & kSCNetworkReachabilityFlagsIsWWAN)               ? 'W' : '-',
-            #else
+#else
             // If we are not on iOS, always output a dash for WWAN
             '-',
-            #endif
+#endif
             (_reachabilityFlags & kSCNetworkReachabilityFlagsReachable)            ? 'R' : '-',
             (_reachabilityFlags & kSCNetworkReachabilityFlagsTransientConnection)  ? 't' : '-',
             (_reachabilityFlags & kSCNetworkReachabilityFlagsConnectionRequired)   ? 'c' : '-',
@@ -238,14 +237,12 @@ static void ReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkReach
 {
     NSAssert(_reachabilityRef != NULL, @"currentNetworkStatus called with NULL reachabilityRef");
     AFReachabilityNetworkStatus status = AFReachabilityNotReachable;
-
+    
     if (!self.reachabilityDetermined) {
-        NSLog(@"Reachability observer %@ has not yet established reachability. networkStatus = %@", self, @"AFReachabilityIndeterminate");
+        
         return AFReachabilityIndeterminate;
     }
-
-    NSLog(@"Reachability Flags: %@\n", [self reachabilityFlagsDescription]);
-
+    
     // If we are observing WiFi, we are only reachable via WiFi when flags are direct
     if (self.isMonitoringLocalWiFi) {
         if ((_reachabilityFlags & kSCNetworkReachabilityFlagsReachable) && (_reachabilityFlags & kSCNetworkReachabilityFlagsIsDirect)) {
@@ -286,7 +283,7 @@ static void ReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkReach
             status = AFReachabilityNotReachable;
         }
     }
-
+    
     NSLog(@"Reachability observer %@ determined networkStatus = %@", self, [self stringFromNetworkStatus:status]);
     return status;
 }
@@ -303,7 +300,6 @@ static void ReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkReach
 {
     [self validateIntrospection];
     BOOL reachable = (AFReachabilityNotReachable != [self networkStatus]);
-    NSLog(@"Reachability observer %@ determined isNetworkReachable = %d", self, reachable);
     return reachable;
 }
 
@@ -311,8 +307,7 @@ static void ReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkReach
 {
     [self validateIntrospection];
     BOOL required = (_reachabilityFlags & kSCNetworkReachabilityFlagsConnectionRequired);
-
-    NSLog(@"Reachability observer %@ determined isConnectionRequired = %d", self, required);
+    
     return required;
 }
 
@@ -334,7 +329,7 @@ static void ReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkReach
     return ((_reachabilityFlags & kSCNetworkReachabilityFlagsConnectionRequired) &&
             (_reachabilityFlags & (kSCNetworkReachabilityFlagsConnectionOnTraffic |
                                    kSCNetworkReachabilityFlagsConnectionOnDemand)));
-
+    
 }
 
 - (BOOL)isInterventionRequired
@@ -349,28 +344,25 @@ static void ReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkReach
 - (void)scheduleObserver
 {
     SCNetworkReachabilityContext context = { .info = self };
-    NSLog(@"Scheduling reachability observer %@ in main dispatch queue", self);
     if (! SCNetworkReachabilitySetCallback(_reachabilityRef, ReachabilityCallback, &context)) {
-        NSLog(@"%@: SCNetworkReachabilitySetCallback() failed: %s", self, SCErrorString(SCError()));
         return;
     }
-
+    
     if (! SCNetworkReachabilitySetDispatchQueue(_reachabilityRef, dispatch_get_main_queue())) {
-       
+        
         return;
     }
 }
 
 - (void)unscheduleObserver
 {
-    if (_reachabilityRef) {
-        NSLog(@"%@: Unscheduling reachability observer from main dispatch queue", self);
-        if (! SCNetworkReachabilitySetDispatchQueue(_reachabilityRef, NULL)) {
-           
+    if (_reachabilityRef)
+    {
+        if (! SCNetworkReachabilitySetDispatchQueue(_reachabilityRef, NULL))
+        {
+            
             return;
         }
-    } else {
-        NSLog(@"%@: Failed to unschedule reachability observer %@: reachability reference is nil.", self, _reachabilityRef);
     }
 }
 
@@ -378,17 +370,16 @@ static void ReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkReach
 {
     // Save the reachability flags
     _reachabilityFlags = reachabilityFlags;
-
+    
     NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithUnsignedInt:reachabilityFlags] forKey:AFReachabilityFlagsUserInfoKey];
-
-   if (! self.reachabilityDetermined) {
-       _reachabilityDetermined = YES;
-       NSLog(@"Network availability has been determined for reachability observer %@", self);
-       [[NSNotificationCenter defaultCenter] postNotificationName:AFReachabilityWasDeterminedNotification object:self userInfo:userInfo];
-   }
-
-   // Post a notification to notify the client that the network reachability changed.
-   [[NSNotificationCenter defaultCenter] postNotificationName:AFReachabilityDidChangeNotification object:self userInfo:userInfo];
+    
+    if (! self.reachabilityDetermined) {
+        _reachabilityDetermined = YES;
+        [[NSNotificationCenter defaultCenter] postNotificationName:AFReachabilityWasDeterminedNotification object:self userInfo:userInfo];
+    }
+    
+    // Post a notification to notify the client that the network reachability changed.
+    [[NSNotificationCenter defaultCenter] postNotificationName:AFReachabilityDidChangeNotification object:self userInfo:userInfo];
 }
 
 - (NSString *)description

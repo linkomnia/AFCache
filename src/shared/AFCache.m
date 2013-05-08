@@ -79,7 +79,9 @@ extern NSString* const UIApplicationWillResignActiveNotification;
 @end
 
 @implementation AFCache
-
+{
+    AFReachabilityObserver* reachabilityObserver_;
+}
 static AFCache *sharedAFCacheInstance = nil;
 static NSString* AFCache_rootPath = nil;
 static NSMutableDictionary* AFCache_contextCache = nil;
@@ -228,6 +230,7 @@ static NSMutableDictionary* AFCache_contextCache = nil;
                                                      name:UIApplicationWillTerminateNotification
                                                    object:nil];        
 #endif
+        reachabilityObserver_ = [[AFReachabilityObserver reachabilityObserverForInternet] retain];
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(reachabilityStatusChanged:)
                                                      name:AFReachabilityDidChangeNotification
@@ -1818,8 +1821,10 @@ static NSMutableDictionary* AFCache_contextCache = nil;
 
 - (void)reachabilityStatusChanged:(NSNotification*)notif
 {
-    isConnectedToNetwork_ = [[AFReachabilityObserver reachabilityObserverForInternet]
-                             isNetworkReachable];
+    if (reachabilityObserver_.reachabilityDetermined == YES)
+    {
+        isConnectedToNetwork_ = [reachabilityObserver_ isNetworkReachable];
+    }
 }
 
 /*
@@ -1922,7 +1927,7 @@ static NSMutableDictionary* AFCache_contextCache = nil;
 	[pendingConnections release];
 	[downloadQueue release];
 	self.cacheInfoStore = nil;
-	
+	[reachabilityObserver_ release];
 	[clientItems release];
 	[dataPath release];
 	[packageInfos release];
