@@ -73,7 +73,7 @@
 
 - (NSData*)data {
     if (nil == data) {
-        
+  
 		if (NO == [self hasValidContentLength])
 		{
 			if ([[self.cache pendingConnections] objectForKey:self.url] != nil)
@@ -114,7 +114,7 @@
     
 	[self.cache signalItemsForURL:self.url usingSelector:@selector(cacheableItemDidReceiveData:)];
     
-    
+
     for (AFCacheableItem *item in[self.cache cacheableItemsForURL:self.url] )
     {
         if (item.progressBlock)
@@ -126,7 +126,7 @@
 }
 
 - (void)handleResponse:(NSURLResponse *)response
-{
+{    
 	self.info.mimeType = [response MIMEType];
 	BOOL mustNotCache = NO;
 	NSDate *now = [NSDate date];
@@ -154,11 +154,9 @@
 			case 304:
 				cacheStatus = kCacheStatusNotModified;
 				self.validUntil = info.expireDate;
-                self.servedFromCache = YES;
 				return;
 			case 200:
 				cacheStatus = kCacheStatusModified;
-				self.servedFromCache = NO;
 				break;
 		}
 	}
@@ -171,6 +169,7 @@
     
     if (200 == statusCode)
     {
+        self.servedFromCache = NO;
         self.fileHandle = [self.cache createFileForItem:self];
     }
 	
@@ -274,40 +273,40 @@
 			
 			// check no-cache in "Cache-Control"
 			// see http://www.ietf.org/rfc/rfc2616.txt - 14.9 Cache-Control, Page 107
-            
+
 			range = [cacheControlHeader rangeOfString: @"no-cache"];
 			if (range.location != NSNotFound) pragmaNoCacheSet = YES;
-            
+
 			range = [cacheControlHeader rangeOfString: @"no-store"];
 			if (range.location != NSNotFound) pragmaNoCacheSet = YES;
-            
+						
             
             // since AFCache can be classified as a private cache, we'll cache objects with the Cache-Control 'private' header too.
             // see 14.9.1 What is Cacheable
             // TODO: check other Cache-Control parameters
             /*
              cache-request-directive =
-             "no-cache"                          ; Section 14.9.1
-             | "no-store"                          ; Section 14.9.2
-             | "max-age" "=" delta-seconds         ; Section 14.9.3, 14.9.4
-             | "max-stale" [ "=" delta-seconds ]   ; Section 14.9.3
-             | "min-fresh" "=" delta-seconds       ; Section 14.9.3
-             | "no-transform"                      ; Section 14.9.5
-             | "only-if-cached"                    ; Section 14.9.4
-             | cache-extension                     ; Section 14.9.6
-             
+                "no-cache"                          ; Section 14.9.1
+              | "no-store"                          ; Section 14.9.2
+              | "max-age" "=" delta-seconds         ; Section 14.9.3, 14.9.4
+              | "max-stale" [ "=" delta-seconds ]   ; Section 14.9.3
+              | "min-fresh" "=" delta-seconds       ; Section 14.9.3
+              | "no-transform"                      ; Section 14.9.5
+              | "only-if-cached"                    ; Section 14.9.4
+              | cache-extension                     ; Section 14.9.6
+        
              cache-response-directive =
-             "public"                               ; Section 14.9.1
-             | "private" [ "=" <"> 1#field-name <"> ] ; Section 14.9.1
-             | "no-cache" [ "=" <"> 1#field-name <"> ]; Section 14.9.1
-             | "no-store"                             ; Section 14.9.2
-             | "no-transform"                         ; Section 14.9.5
-             | "must-revalidate"                      ; Section 14.9.4
-             | "proxy-revalidate"                     ; Section 14.9.4
-             | "max-age" "=" delta-seconds            ; Section 14.9.3
-             | "s-maxage" "=" delta-seconds           ; Section 14.9.3
-             | cache-extension                        ; Section 14.9.6
-             */
+                "public"                               ; Section 14.9.1
+              | "private" [ "=" <"> 1#field-name <"> ] ; Section 14.9.1
+              | "no-cache" [ "=" <"> 1#field-name <"> ]; Section 14.9.1
+              | "no-store"                             ; Section 14.9.2
+              | "no-transform"                         ; Section 14.9.5
+              | "must-revalidate"                      ; Section 14.9.4
+              | "proxy-revalidate"                     ; Section 14.9.4
+              | "max-age" "=" delta-seconds            ; Section 14.9.3
+              | "s-maxage" "=" delta-seconds           ; Section 14.9.3
+              | cache-extension                        ; Section 14.9.6            
+            */            
 		}
 		
 		// If expires is given, adjust validUntil date
@@ -358,7 +357,7 @@
         [newRequest setHTTPMethod:@"HEAD"];
         inRequest = newRequest;
     }
-    
+
     if (inRedirectResponse)
 	{
         NSMutableURLRequest *aRequest = [[inRequest mutableCopy] autorelease];
@@ -371,8 +370,8 @@
             [CACHED_REDIRECTS setValue:self.info.responseURL forKey:[self.url absoluteString]];
         }
         return aRequest;
-    }
-    
+    }	
+
 	return inRequest;
 }
 
@@ -409,7 +408,7 @@
 		[self connection:connection didFailWithError:[NSError errorWithDomain:kAFCacheNSErrorDomain code:self.info.statusCode userInfo:nil]];
 		return;
 	}
-    
+    	
 	if (validUntil) {
 		AFLog(@"Setting info for Object at %@ to %@", [url absoluteString], [info description]);
 #if USE_ASSERTS
@@ -481,7 +480,7 @@
         
         return;
 	}
-    
+
     if ([challenge.protectionSpace.authenticationMethod
          isEqualToString:NSURLAuthenticationMethodServerTrust] &&
         [AFCache sharedInstance].disableSSLCertificateValidation)
@@ -497,7 +496,7 @@
 
 - (void)connection:(NSURLConnection *)connection didCancelAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
 {
-    
+   
 	NSError *err = [NSError errorWithDomain: @"HTTP Authentifcation failed" code: 99 userInfo: nil];
 	[self connection:connection didFailWithError:err];
 }
@@ -512,18 +511,18 @@
  */
 - (void)connectionDidFinishLoading: (NSURLConnection *) connection {
 #if USE_ASSERTS
-    NSAssert(url != nil, @"URL MUST NOT be nil! This seems like a software bug.");
+        NSAssert(url != nil, @"URL MUST NOT be nil! This seems like a software bug.");
 #endif
-    
+
     switch (self.info.statusCode) {
         case 204: // No Content
         case 205: // Reset Content
-            // TODO: case 206: Partial Content (RTFM)
+        // TODO: case 206: Partial Content (RTFM)
         case 400: // Bad Request
         case 401: // Unauthorized
         case 402: // Payment Required
         case 403: // Forbidden
-        case 404: // Not Found
+        case 404: // Not Found                    
         case 405: // Method Not Allowed
         case 406: // Not Acceptable
         case 407: // Proxy Authentication Required
@@ -534,23 +533,23 @@
         case 412: // Precondition Failed
         case 413: // Request Entity Too Large
         case 414: // Request-URI Too Long
-        case 415: // Unsupported Media Type
+        case 415: // Unsupported Media Type           
         case 416: // Requested Range Not Satisfiable
         case 417: // Expectation Failed
-        case 500: // Internal Server Error
-        case 501: // Not Implemented
-        case 502: // Bad Gateway
-        case 503: // Service Unavailable
-        case 504: // Gateway Timeout
-        case 505: // HTTP Version Not Supported
+        case 500: // Internal Server Error           
+        case 501: // Not Implemented           
+        case 502: // Bad Gateway           
+        case 503: // Service Unavailable           
+        case 504: // Gateway Timeout           
+        case 505: // HTTP Version Not Supported           
         {
             break;
         }
-            
+                    
         default:
         {
             NSError *err = nil;
-            
+
             if (url == nil) err = [NSError errorWithDomain: @"URL is nil" code: 99 userInfo: nil];
             
             // do we have a correct contentLength?
@@ -563,7 +562,9 @@
                 {
                     self.info.contentLength = fileSize;
                 }
-            } else {
+            }
+            else
+            {
                 AFLog(@"Failed to get file attributes for file at path %@. Error: %@", path, [err description]);
             }
             [self setDownloadFinishedFileAttributes];
@@ -583,17 +584,23 @@
                     AFLog(@"Updating file modification date for object with URL: %@", [url absoluteString]);
                     [self.cache updateModificationDataAndTriggerArchiving:self];
                 }
-            }
-        }
+            }            
+        }            
     }
     
     // Remove reference to pending connection to unlink the item from the cache
-    [cache removeReferenceToConnection: connection];
+    [cache removeReferenceToConnection: connection];	
 	
     NSArray* items = [self.cache cacheableItemsForURL:self.url];
     // make sure we survive being released in the following call
     [[self retain] autorelease];
     
+    if (self.info.statusCode != 200 && self.data != nil)
+    {
+        //
+        // we got data which came probably not from the server
+        self.servedFromCache = YES;
+    }
     
     // Call delegate for this item
     if (self.isPackageArchive)
@@ -685,6 +692,14 @@
     {
         [self.cache setConnectedToNetwork:NO];
     }
+    if (self.info.statusCode != 200 && self.data != nil)
+    {
+        //
+        // we got some data which was not coming from the server
+        // looks like we had something in the cache
+        //
+        self.servedFromCache = YES;
+    }
     
 	if (nil != self.data && self.isRevalidating == NO)
     {
@@ -747,8 +762,8 @@
 #if USE_ASSERTS
   	NSAssert(response_delay >= 0, @"response_delay must never be negative!");
 #else
-    // A zero (or negative) response delay indicates a transfer or connection error.
-    // This happened when the archiever started between request start and response.
+// A zero (or negative) response delay indicates a transfer or connection error.
+// This happened when the archiever started between request start and response.
     if (response_delay <= 0)
     {
         return NO;
@@ -864,7 +879,7 @@
 		return NO;
 	}
 	
-    //    NSLog(@"has valid content length ? %@", self.url);
+//    NSLog(@"has valid content length ? %@", self.url);
 	NSError* err = nil;
 	NSDictionary* attr = [[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:&err];
 	if (attr == nil)
